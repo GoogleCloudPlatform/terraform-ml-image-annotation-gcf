@@ -1,0 +1,10 @@
+#! /bin/bash
+
+sed -i "s/$(echo JGROUP_BUCKET | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo ${jgroup_bucket_name} | sed -e 's/[\/&]/\\&/g')/g" /usr/lib/xwiki/WEB-INF/observation/remote/jgroups/tcp.xml
+sed -i "s/$(echo ACCESS_KEY | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo ${jgroup_bucket_access_key} | sed -e 's/[\/&]/\\&/g')/g" /usr/lib/xwiki/WEB-INF/observation/remote/jgroups/tcp.xml
+sed -i "s/$(echo SECRET_KEY | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo ${jgroup_bucket_secret_key} | sed -e 's/[\/&]/\\&/g')/g" /usr/lib/xwiki/WEB-INF/observation/remote/jgroups/tcp.xml
+
+DB_PASS="$(gcloud secrets versions access --secret ${xwiki_db_password_secret} latest --project ${gcp_project})"
+
+bash /home/xwiki_startup.sh "${db_ip}" "${xwiki_db_username}" "$${DB_PASS}" "${file_store_ip}"
+bash /home/xwiki_deploy_flavor.sh "${db_ip}" "${xwiki_db_username}" "$${DB_PASS}" "${file_store_ip}"

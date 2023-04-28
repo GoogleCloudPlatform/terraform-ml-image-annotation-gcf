@@ -1,0 +1,7 @@
+functions-framework==3.*
+google-cloud-vision==3.4.*
+google-cloud-storage==2.7.*
+google-cloud-logging
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-exporter-gcp-trace
