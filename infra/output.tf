@@ -29,6 +29,11 @@ output "vision_annotations_gcs" {
   value       = "gs://${module.storage.gcs_annotations}"
 }
 
+output "annotate_gcs_function_name" {
+  description = "The name of the cloud function that annotates an image triggered by a GCS event."
+  value       = module.cloudfunctions.annotate_gcs_function_name
+}
+
 output "neos_walkthrough_url" {
   description = "Neos Tutorial URL"
   value       = "https://console.cloud.google.com/products/solutions/deployments?walkthrough_id=solutions-in-console--image-processing--image-processing-gcf_tour"

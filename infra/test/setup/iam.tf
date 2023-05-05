@@ -23,8 +23,8 @@ locals {
 
 resource "google_service_account" "int_test" {
   project      = module.project.project_id
-  account_id   = "ci-hsa"
-  display_name = "ci-hsa"
+  account_id   = "ci-jss"
+  display_name = "ci-jss"
 }
 
 resource "google_project_iam_member" "int_test" {
