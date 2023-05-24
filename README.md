@@ -4,6 +4,7 @@ This solution includes frontend and backend code to demonstrate image processing
 
 Image processing is one of the most tangible ways to incorporate AI to improve customer operations. Examples include defect detection in manufacturing, unsafe image detection for user-generated content, and disease diagnosis in healthcare, among others. However, doing this in a scalable way requires the integration of several GCP products.
 
+
 The presented solution uses the following technologies:
 
 - [Cloud Functions](https://cloud.google.com/functions/docs)
