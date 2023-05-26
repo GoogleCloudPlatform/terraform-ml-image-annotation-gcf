@@ -1,0 +1,64 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: blueprints.cloud.google.com/v1alpha1
+kind: BlueprintMetadata
+metadata:
+  name: terraform-ml-image-annotation-gcf-display
+spec:
+  info:
+    title: cloudfunctions module
+    source:
+      repo: https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf.git
+      sourceType: git
+      dir: cloudfunctions
+  ui:
+    input:
+      variables:
+        annotations-bucket:
+          name: annotations-bucket
+          title: Annotations-Bucket
+        gcf_annotation_features:
+          name: gcf_annotation_features
+          title: Gcf Annotation Features
+        gcf_http_ingress_type_index:
+          name: gcf_http_ingress_type_index
+          title: Gcf Http Ingress Type Index
+        gcf_http_ingress_types_list:
+          name: gcf_http_ingress_types_list
+          title: Gcf Http Ingress Types List
+        gcf_location:
+          name: gcf_location
+          title: Gcf Location
+        gcf_log_level:
+          name: gcf_log_level
+          title: Gcf Log Level
+        gcf_max_instance_count:
+          name: gcf_max_instance_count
+          title: Gcf Max Instance Count
+        gcf_require_http_authentication:
+          name: gcf_require_http_authentication
+          title: Gcf Require Http Authentication
+        gcf_timeout_seconds:
+          name: gcf_timeout_seconds
+          title: Gcf Timeout Seconds
+        gcr_invoker_members:
+          name: gcr_invoker_members
+          title: Gcr Invoker Members
+        gcr_role_invoker:
+          name: gcr_role_invoker
+          title: Gcr Role Invoker
+        input-bucket:
+          name: input-bucket
+          title: Input-Bucket
