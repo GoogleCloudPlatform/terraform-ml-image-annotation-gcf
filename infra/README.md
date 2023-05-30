@@ -38,10 +38,11 @@ Sample infrastructure detailed description.
 
 ## Outputs
 
-| Name                   | Description                                                 |
-| ---------------------- | ----------------------------------------------------------- |
-| vision_annotations_gcs | Output GCS bucket name.                                     |
-| vision_entrypoint_url  | The URL for requesting online prediction with HTTP request. |
-| vision_input_gcs       | Input GCS bucket name.                                      |
+| Name                       | Description                                                                      |
+|----------------------------|----------------------------------------------------------------------------------|
+| vision_annotations_gcs     | Output GCS bucket name.                                                          |
+| vision_entrypoint_url      | The URL for requesting online prediction with HTTP request.                      |
+| vision_input_gcs           | Input GCS bucket name.                                                           |
+| annotate_gcs_function_name | The name of the cloud function that annotates an image triggered by a GCS event. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
