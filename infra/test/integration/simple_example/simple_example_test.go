@@ -29,9 +29,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// Retry if these errors are encountered.
+var retryErrors = map[string]string{
+	// IAM for Eventarc service agent is eventually consistent
+	".*Permission denied while using the Eventarc Service Agent.*": "Eventarc Service Agent IAM is eventually consistent",
+}
+
 func TestSimpleExample(t *testing.T) {
 
-	example := tft.NewTFBlueprintTest(t)
+	example := tft.NewTFBlueprintTest(t, tft.WithRetryableTerraformErrors(retryErrors, 10, time.Minute))
 
 	example.DefineVerify(func(assert *assert.Assertions) {
 		projectID := example.GetTFSetupStringOutput("project_id")
