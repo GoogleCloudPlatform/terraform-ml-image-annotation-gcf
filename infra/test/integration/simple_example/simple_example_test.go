@@ -29,27 +29,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// Retry if these errors are encountered.
+var retryErrors = map[string]string{
+	// IAM for Eventarc service agent is eventually consistent
+	".*Permission denied while using the Eventarc Service Agent.*": "Eventarc Service Agent IAM is eventually consistent",
+}
+
 func TestSimpleExample(t *testing.T) {
 
-	example := tft.NewTFBlueprintTest(t)
+	example := tft.NewTFBlueprintTest(t, tft.WithRetryableTerraformErrors(retryErrors, 10, time.Minute))
 
 	example.DefineVerify(func(assert *assert.Assertions) {
 		projectID := example.GetTFSetupStringOutput("project_id")
 		gcloudArgs := gcloud.WithCommonArgs([]string{"--project", projectID})
 
-        // Use publicly available image url
-        imageURI := "https://storage.googleapis.com/cft_test_data/annotate_images/ML20682781.jpg"
-        features := []string{"FACE_DETECTION", "OBJECT_LOCALIZATION", "IMAGE_PROPERTIES", "LABEL_DETECTION", "SAFE_SEARCH_DETECTION"}
-        visionEntrypointUrlArr := strings.Fields(example.GetStringOutput("vision_entrypoint_url"))
-
-        annotateUrl := strings.Trim(visionEntrypointUrlArr[0], "[]") + "/annotate"
-
-		// Check cloud function status
-		functions := gcloud.Run(t, ("functions list --format=json"), gcloudArgs).Array()
-		for _, function := range functions {
-			state := function.Get("state").String()
-			assert.Equal("ACTIVE", state, "expected Cloud Function to be active")
-		}
+		// Use publicly available image url
+		imageURI := "https://storage.googleapis.com/cft_test_data/annotate_images/ML20682781.jpg"
+		features := []string{"FACE_DETECTION", "OBJECT_LOCALIZATION", "IMAGE_PROPERTIES", "LABEL_DETECTION", "SAFE_SEARCH_DETECTION"}
+		visionEntrypointUrlArr := strings.Fields(example.GetStringOutput("vision_entrypoint_url"))
+		annotateUrl := strings.Trim(visionEntrypointUrlArr[0], "[]") + "/annotate"
 
 		// Check if the vision annotations bucket exists
 		bucketName := example.GetStringOutput("vision_annotations_gcs")
@@ -57,17 +55,40 @@ func TestSimpleExample(t *testing.T) {
 		assert.NotEmpty(storage)
 
 		// Check if the vision input bucket exists
-        bucketName = example.GetStringOutput("vision_input_gcs")
-        storage = gcloud.Run(t, fmt.Sprintf("storage buckets describe %s --format=json", bucketName), gcloudArgs)
-        assert.NotEmpty(storage)
+		bucketName = example.GetStringOutput("vision_input_gcs")
+		storage = gcloud.Run(t, fmt.Sprintf("storage buckets describe %s --format=json", bucketName), gcloudArgs)
+		assert.NotEmpty(storage)
 
-        fmt.Printf("annotateUrl: %s \n", annotateUrl)
+		// Check cloud function status and trigger region
+		annotateGcsFunctionName := example.GetStringOutput("annotate_gcs_function_name")
+		annotateGcsFunctionRegion := ""
+		functions := gcloud.Run(t, ("functions list --format=json"), gcloudArgs).Array()
+		for _, function := range functions {
+			state := function.Get("state").String()
+			assert.Equal("ACTIVE", state, "expected Cloud Function to be active")
+			functionName := function.Get("name").String()
+			eventTrigger := function.Get("eventTrigger")
+			if len(eventTrigger.String()) > 0 && strings.Contains(functionName, "functions/" + annotateGcsFunctionName) {
+				fmt.Printf("eventTrigger: %s\n", eventTrigger.String())
+				annotateGcsFunctionRegion = eventTrigger.Get("triggerRegion").String()
+				fmt.Printf("triggerRegion: %s\n", annotateGcsFunctionRegion)
+			}
+		}
+		assert.NotEmpty(annotateGcsFunctionRegion)
 
-        // Check the RESTful API annotation
-        isServing := func() (bool, error) {
-            req, err := CreateVisionAPIRequest(annotateUrl, imageURI, features)
-            client := http.Client{}
-            resp, err := client.Do(req)
+		// Check the eventTrigger for the annotate_gcs function
+		annotateGcsFunction := gcloud.Run(t, fmt.Sprintf("functions describe %s --region %s --gen2 --format=json", annotateGcsFunctionName, annotateGcsFunctionRegion), gcloudArgs)
+		topicName := annotateGcsFunction.Get("eventTrigger").Get("pubsubTopic").String()
+		topic := gcloud.Run(t, fmt.Sprintf("pubsub topics describe %s --format=json", topicName), gcloudArgs)
+		assert.NotEmpty(topic)
+
+		fmt.Printf("annotateUrl: %s \n", annotateUrl)
+
+		// Check the RESTful API annotation
+		isServing := func() (bool, error) {
+			req, err := CreateVisionAPIRequest(annotateUrl, imageURI, features)
+			client := http.Client{}
+			resp, err := client.Do(req)
 			if err != nil || resp.StatusCode != 200 {
 				// retry if err or status not 200
 				return true, nil
