@@ -17,6 +17,9 @@ import io
 import json
 import os
 import sys
+# Imports Python standard library logging
+# Logs show fine in the Cloud Logs explorer, but in GCF LOGS, they show HTTP logging request.
+import logging
 from typing import Dict, List, Optional, OrderedDict
 from urllib import parse
 
@@ -51,10 +54,6 @@ tracer = tracer_helper.get_tracer(__name__)
 LOG_NAME = "vision-api"
 # Selects the log to write to
 logger = logging_client.logger(LOG_NAME)
-
-# Imports Python standard library logging
-# Logs show fine in the Cloud Logs explorer, but in GCF LOGS, they show HTTP logging request.
-import logging
 
 # By default, disable logging for production:
 logging.disable(sys.maxsize)
@@ -309,7 +308,7 @@ def list_bucket(
     try:
         blobs = storage_client.list_blobs(bucket_name, max_results=max_results)
         return blobs
-    except:
+    except Exception:
         pass
     return None
 
@@ -332,7 +331,7 @@ def read_blob(bucket_name: str, file_name: str) -> Optional[str]:
     try:
         with blob.open("rb") as fp:
             content = fp.read()
-    except:
+    except Exception:
         return None
     return content
 
@@ -357,7 +356,7 @@ def read_json_str(bucket_name: str, file_name: str) -> Optional[str]:
         if json_str:
             json_obj = json.loads(json_str)
             return json_obj
-    except:
+    except Exception:
         pass
     return None
 
@@ -378,12 +377,12 @@ def get_list_of_files(
     if start:
         try:
             range_start = int(start)
-        except ValueError as ex:
+        except ValueError:
             pass
     if end:
         try:
             range_end = int(end)
-        except ValueError as ex:
+        except ValueError:
             pass
     if embed:
         try:
@@ -391,7 +390,7 @@ def get_list_of_files(
             # limit numbwer to something reasonable
             if num_embedded_annotations > NUM_EMBEDDED_ANNOTATIONS_MAX:
                 num_embedded_annotations = NUM_EMBEDDED_ANNOTATIONS_MAX
-        except ValueError as ex:
+        except ValueError:
             pass
     # list images
     image_blobs = list_bucket(imagess_bucket, range_end)
@@ -414,7 +413,7 @@ def get_list_of_files(
     for image_blob in image_blobs:
         json_filename = json_filename_for_image(image_blob.name)
         if json_filename in list_of_annotation_names:
-            # optionally fill in JSON annotations, but only if number of files is6 small
+            # optionally fill in JSON annotations, but only if number of files is small
             if num_embedded_annotations > 0:
                 json_content = read_json_str(annotations_bucket, json_filename)
                 num_embedded_annotations -= 1
@@ -455,7 +454,8 @@ def get_annotation(annotations_bucket, annotation_name):
 def handle_bucket(request: Request):
     """Decode request and dispatch handling to the functions.
 
-    Used by the demo UI to display images and annotation results from batch processing in the GCS buckets.
+    Used by the demo UI to display images and annotation results
+    from batch processing in the GCS buckets.
 
     Args:
         request: Flask HTTP request.aborter

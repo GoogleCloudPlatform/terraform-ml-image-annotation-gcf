@@ -45,4 +45,4 @@ jobs:
           fi
       - run: docker run --rm -v ${{ github.workspace }}:/workspace ${{ steps.variables.outputs.dev-tools }} /usr/local/bin/test_lint.sh
         env:
-          EXCLUDE_LINT_DIRS: '\./src/frontend/public/'
+          EXCLUDE_LINT_DIRS: '\./src/frontend/public'
