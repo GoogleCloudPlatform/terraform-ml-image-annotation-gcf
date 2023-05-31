@@ -98,7 +98,9 @@ def get_all_vision_features() -> List[Dict[str, vision.Feature.Type]]:
     Returns:
         list: A list of all available features.
     """
-    return [{"type_": feature} for feature in vision.Feature.Type if feature != 0]
+    return [
+        {"type_": feature} for feature in vision.Feature.Type if feature != 0
+    ]
 
 
 @tracer.start_as_current_span("get_feature_by_name")
@@ -139,7 +141,9 @@ def build_features_list(feature_names: str) -> Optional[list]:
 
 
 @tracer.start_as_current_span("annotate_image_uri")
-def annotate_image_uri(image_uri: str, detect_features: Optional[list] = None) -> str:
+def annotate_image_uri(
+    image_uri: str, detect_features: Optional[list] = None
+) -> str:
     """Calculate annotations for the image referenced by the URI.
 
     Args:
@@ -147,7 +151,8 @@ def annotate_image_uri(image_uri: str, detect_features: Optional[list] = None) -
         detect_features: a list of Vision Feature Types
 
     Returns:
-        string: JSON with annotations built from vision.AnnotateImageResponse"""
+        string: JSON with annotations built from vision.AnnotateImageResponse
+    """
 
     logging.info("Annotate image: %s", image_uri)
     vision_client = vision.ImageAnnotatorClient()
@@ -155,7 +160,9 @@ def annotate_image_uri(image_uri: str, detect_features: Optional[list] = None) -
     vision_image = vision.Image()
     vision_image.source.image_uri = image_uri
     logging.info("Building Request")
-    request = vision.AnnotateImageRequest(image=vision_image, features=detect_features)
+    request = vision.AnnotateImageRequest(
+        image=vision_image, features=detect_features
+    )
     logging.info("Annotating image.")
     response = vision_client.annotate_image(request, timeout=120.0)
     json_string = type(response).to_json(response)
@@ -173,11 +180,14 @@ def annotate_image(
         detect_features: a list of Vision Feature Types
 
     Returns:
-        string: JSON with annotations built from vision.AnnotateImageResponse"""
+        string: JSON with annotations built from vision.AnnotateImageResponse
+    """
     logging.info("annotate_image()")
     vision_client = vision.ImageAnnotatorClient()
     logging.info("Building Request")
-    request = vision.AnnotateImageRequest(image=vision_image, features=detect_features)
+    request = vision.AnnotateImageRequest(
+        image=vision_image, features=detect_features
+    )
     logging.info("Annotating image.")
     response = vision_client.annotate_image(request, timeout=120.0)
     json_string = type(response).to_json(response)
@@ -281,7 +291,9 @@ def annotate_gcs(cloud_event):
             )
             gcs_write(annotations_bucket, annotations_file_name, json_result)
     else:
-        logging.error(f"{event_id}: Image {image_file_name} could not be read.")
+        logging.error(
+            f"{event_id}: Image {image_file_name} could not be read."
+        )
     logging.info(f"Event {event_id} is processed")
 
 
@@ -360,7 +372,9 @@ def get_list_of_files(
 ) -> Response:
     range_start = 0
     range_end = FILE_LIST_SIZE_MAX
-    num_embedded_annotations = 0  # request number of embedded annotation results
+    num_embedded_annotations = (
+        0  # request number of embedded annotation results
+    )
     if start:
         try:
             range_start = int(start)
@@ -523,14 +537,16 @@ def handle_annotation(request):
             logging.info("Converted base64 encoded image from the form.")
         if image_bin is None and request.files and "image" in request.files:
             logging.info(
-                "Reading image from attached file %s" % request.files["image"].filename
+                "Reading image from attached file %s"
+                % request.files["image"].filename
             )
             file_object = request.files.get("image")
             image_bin = file_object.read()
             logging.debug("image_bin size=%s" % len(image_bin))
     elif request.method == "GET":
         logging.info(
-            "Received form in GET path=%s, args=%s" % (request.path, request.args)
+            "Received form in GET path=%s, args=%s"
+            % (request.path, request.args)
         )
         image_uri = request.args.get("image_uri", None)
         features_http = request.args.get("features")
@@ -565,8 +581,12 @@ def handle_annotation(request):
         result = annotate_image(vision_image, features_list)
     if result:
         if result.find('"error"') > 0 and result.find('"code":') > 0:
-            logging.error("Vision API returned error, check JSON result for details.")
-            return make_response(result, 412)  # Vision API returned JSON with an error
+            logging.error(
+                "Vision API returned error, check JSON result for details."
+            )
+            return make_response(
+                result, 412
+            )  # Vision API returned JSON with an error
         logging.info("Returning annotation result as JSON.")
         return make_response(result, 200)
     logging.error("Annotation result is None.")
