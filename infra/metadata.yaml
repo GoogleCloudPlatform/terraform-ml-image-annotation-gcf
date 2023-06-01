@@ -82,6 +82,8 @@ spec:
       varType: string
       defaultValue: 420s
     outputs:
+    - name: annotate_gcs_function_name
+      description: The name of the cloud function that annotates an image triggered by a GCS event.
     - name: neos_walkthrough_url
       description: Neos Tutorial URL
     - name: vision_annotations_gcs
@@ -100,10 +102,3 @@ spec:
     - iam.googleapis.com
     - storage.googleapis.com
     - serviceusage.googleapis.com
-    - compute.googleapis.com
-    - logging.googleapis.com
-    - sqladmin.googleapis.com
-    - cloudbuild.googleapis.com
-    - file.googleapis.com
-    - servicenetworking.googleapis.com
-    - monitoring.googleapis.com
