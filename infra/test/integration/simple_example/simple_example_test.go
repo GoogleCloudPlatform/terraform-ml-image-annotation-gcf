@@ -22,6 +22,7 @@ import (
 	"bytes"
 	"time"
 	"strings"
+	"regexp"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
@@ -59,9 +60,11 @@ func TestSimpleExample(t *testing.T) {
 		storage = gcloud.Run(t, fmt.Sprintf("storage buckets describe %s --format=json", bucketName), gcloudArgs)
 		assert.NotEmpty(storage)
 
-		// Check cloud function status and trigger region
+		// Check Cloud Function status and trigger region
 		annotateGcsFunctionName := example.GetStringOutput("annotate_gcs_function_name")
 		annotateGcsFunctionRegion := ""
+		annotateHttpFunctionName := example.GetStringOutput("annotate_http_function_name")
+		annotateHttpFunctionRegion := ""
 		functions := gcloud.Run(t, ("functions list --format=json"), gcloudArgs).Array()
 		for _, function := range functions {
 			state := function.Get("state").String()
@@ -73,8 +76,16 @@ func TestSimpleExample(t *testing.T) {
 				annotateGcsFunctionRegion = eventTrigger.Get("triggerRegion").String()
 				fmt.Printf("triggerRegion: %s\n", annotateGcsFunctionRegion)
 			}
+			if strings.Contains(functionName, "functions/" + annotateHttpFunctionName) {
+				reg := regexp.MustCompile(`locations/([^/]+)/`)
+				match := reg.FindStringSubmatch(functionName)
+				if len(match) > 1 {
+					annotateHttpFunctionRegion = match[1]
+				}
+			}
 		}
 		assert.NotEmpty(annotateGcsFunctionRegion)
+		assert.NotEmpty(annotateHttpFunctionRegion)
 
 		// Check the eventTrigger for the annotate_gcs function
 		annotateGcsFunction := gcloud.Run(t, fmt.Sprintf("functions describe %s --region %s --gen2 --format=json", annotateGcsFunctionName, annotateGcsFunctionRegion), gcloudArgs)
@@ -96,6 +107,19 @@ func TestSimpleExample(t *testing.T) {
 			return false, nil
 		}
 		utils.Poll(t, isServing, 20, time.Second * 3)
+
+		// Check Cloud Function source code exists
+		annotateHttpFunction := gcloud.Run(t, fmt.Sprintf("functions describe %s --region %s --gen2 --format=json", annotateHttpFunctionName, annotateHttpFunctionRegion), gcloudArgs)
+		annotateHttpSourceBucket := annotateHttpFunction.Get("buildConfig.source.storageSource.bucket").String()
+		annotateHttpSourceObject := annotateHttpFunction.Get("buildConfig.source.storageSource.object").String()
+		annotateHttpSource := gcloud.Run(t, fmt.Sprintf("storage objects describe gs://%s/%s --format=json", annotateHttpSourceBucket, annotateHttpSourceObject), gcloudArgs)
+		assert.NotEmpty(annotateHttpSource)
+
+		annotateGcsSourceBucket := annotateGcsFunction.Get("buildConfig.source.storageSource.bucket").String()
+		annotateGcsSourceObject := annotateGcsFunction.Get("buildConfig.source.storageSource.object").String()
+		annotateGcsSource := gcloud.Run(t, fmt.Sprintf("storage objects describe gs://%s/%s --format=json", annotateGcsSourceBucket, annotateGcsSourceObject), gcloudArgs)
+		assert.NotEmpty(annotateGcsSource)
+
 	})
 	example.Test()
 }

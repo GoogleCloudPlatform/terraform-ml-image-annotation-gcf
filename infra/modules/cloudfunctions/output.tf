@@ -29,6 +29,11 @@ output "annotate_gcs_function_name" {
   value       = google_cloudfunctions2_function.annotate_gcs.name
 }
 
+output "annotate_http_function_name" {
+  description = "The name of the cloud function that annotates an image triggered by an HTTP request."
+  value       = google_cloudfunctions2_function.annotate_http.name
+}
+
 output "gcf_sa" {
   description = "Cloud Functions SA."
   value       = "GCF SA=${google_service_account.gcf_sa.email}"

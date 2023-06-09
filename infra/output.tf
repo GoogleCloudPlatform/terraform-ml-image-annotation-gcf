@@ -34,6 +34,11 @@ output "annotate_gcs_function_name" {
   value       = module.cloudfunctions.annotate_gcs_function_name
 }
 
+output "annotate_http_function_name" {
+  description = "The name of the cloud function that annotates an image triggered by an HTTP request."
+  value       = module.cloudfunctions.annotate_http_function_name
+}
+
 output "neos_walkthrough_url" {
   description = "Neos Tutorial URL"
   value       = "https://console.cloud.google.com/products/solutions/deployments?walkthrough_id=solutions-in-console--image-processing--image-processing-gcf_tour"
