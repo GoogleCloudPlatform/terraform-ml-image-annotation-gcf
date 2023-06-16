@@ -55,8 +55,8 @@ func TestSimpleExample(t *testing.T) {
 		assert.NotEmpty(storage)
 
 		// Check if the vision input bucket exists
-		bucketName = example.GetStringOutput("vision_input_gcs")
-		storage = gcloud.Run(t, fmt.Sprintf("storage buckets describe %s --format=json", bucketName), gcloudArgs)
+		inputBucketName := example.GetStringOutput("vision_input_gcs")
+		storage = gcloud.Run(t, fmt.Sprintf("storage buckets describe %s --format=json", inputBucketName), gcloudArgs)
 		assert.NotEmpty(storage)
 
 		// Check cloud function status and trigger region
@@ -96,6 +96,11 @@ func TestSimpleExample(t *testing.T) {
 			return false, nil
 		}
 		utils.Poll(t, isServing, 20, time.Second * 3)
+
+		// Update annotate_gcs env vars
+		sourceCodeUrl := example.GetStringOutput("source_code_url")
+		gcloud.Run(t, fmt.Sprintf("functions deploy %s --region=%s --trigger-bucket=%s --source='%s' --gen2 --update-env-vars='FEATURES=TEXT_DETECTION' --format=json",
+			annotateGcsFunctionName, annotateGcsFunctionRegion, inputBucketName, sourceCodeUrl), gcloudArgs)
 	})
 	example.Test()
 }

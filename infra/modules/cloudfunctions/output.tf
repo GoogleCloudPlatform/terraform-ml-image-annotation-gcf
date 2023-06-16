@@ -29,6 +29,16 @@ output "annotate_gcs_function_name" {
   value       = google_cloudfunctions2_function.annotate_gcs.name
 }
 
+output "code_bucket" {
+  description = "The name of the bucket where the cloud function code is stored."
+  value       = google_storage_bucket.code_bucket.name
+}
+
+output "source_code_filename" {
+  description = "The name of the file containing the cloud function code."
+  value       = google_storage_bucket_object.gcf_code.name
+}
+
 output "gcf_sa" {
   description = "Cloud Functions SA."
   value       = "GCF SA=${google_service_account.gcf_sa.email}"
