@@ -23,8 +23,10 @@
 | Name | Description |
 |------|-------------|
 | annotate\_gcs\_function\_name | The name of the cloud function that annotates an image triggered by a GCS event. |
+| code\_bucket | The name of the bucket where the cloud function code is stored. |
 | function\_uri | Cloud Function URI and ingress parameters. |
 | gcf\_sa | Cloud Functions SA. |
 | gcs\_account | Cloud StorageS SA. |
+| source\_code\_filename | The name of the file containing the cloud function code. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
