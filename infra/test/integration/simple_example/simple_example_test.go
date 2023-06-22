@@ -99,7 +99,7 @@ func TestSimpleExample(t *testing.T) {
 
 		// Update annotate_gcs env vars
 		sourceCodeUrl := example.GetStringOutput("source_code_url")
-		gcloud.Run(t, fmt.Sprintf("functions deploy %s --region=%s --trigger-bucket=%s --source='%s' --gen2 --update-env-vars='FEATURES=TEXT_DETECTION' --format=json",
+		gcloud.Run(t, fmt.Sprintf("functions deploy %s --region=%s --trigger-bucket=%s --source=%s --gen2 --update-env-vars='FEATURES=TEXT_DETECTION' --format=json",
 			annotateGcsFunctionName, annotateGcsFunctionRegion, inputBucketName, sourceCodeUrl), gcloudArgs)
 	})
 	example.Test()
