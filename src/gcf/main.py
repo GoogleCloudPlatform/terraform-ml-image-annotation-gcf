@@ -282,7 +282,7 @@ def annotate_gcs(cloud_event):
         logging.info(
             f"{event_id}: Loaded {image_file_name} as vision.Image, executing annotations."
         )
-        json_result = annotate_image(vision_image, None)
+        json_result = annotate_image(vision_image, features_list)
         logging.info(f"{event_id}: Annotated image {image_file_name}")
         if json_result:
             logging.info(
