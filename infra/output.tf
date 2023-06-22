@@ -36,5 +36,5 @@ output "annotate_gcs_function_name" {
 
 output "neos_walkthrough_url" {
   description = "Neos Tutorial URL"
-  value       = "https://console.cloud.google.com/products/solutions/deployments?walkthrough_id=solutions-in-console--image-processing--image-processing-gcf_tour"
+  value       = "https://console.cloud.google.com/products/solutions/deployments?walkthrough_id=panels--sic--image-processing-gcf_toc"
 }
