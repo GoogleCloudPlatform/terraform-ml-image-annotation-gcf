@@ -21,6 +21,24 @@ data "google_project" "project" {
   project_id = var.project_id
 }
 
+resource "google_project_service_identity" "eventarc" {
+  provider = google-beta
+
+  project = data.google_project.project.project_id
+  service = "eventarc.googleapis.com"
+
+  depends_on = [
+    google_project_service.enabled
+  ]
+}
+
+resource "google_project_iam_member" "eventarc_sa_role" {
+  project = data.google_project.project.project_id
+  role    = "roles/eventarc.serviceAgent"
+  member  = "serviceAccount:${google_project_service_identity.eventarc.email}"
+}
+
+
 resource "null_resource" "previous_time" {}
 
 # gate resource creation until APIs are enabled, using approximate timeout
@@ -28,7 +46,8 @@ resource "null_resource" "previous_time" {}
 resource "time_sleep" "wait_for_apis" {
   depends_on = [
     null_resource.previous_time,
-    google_project_service.enabled
+    google_project_service.enabled,
+    google_project_iam_member.eventarc_sa_role
   ]
 
   create_duration = var.time_to_enable_apis
