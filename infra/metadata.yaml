@@ -24,7 +24,6 @@ spec:
     source:
       repo: https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf.git
       sourceType: git
-      dir: /infra
     description:
       tagline: Sample infrastructure tagline.
       detailed: Sample infrastructure detailed description.
@@ -94,8 +93,6 @@ spec:
       description: Neos Tutorial URL
     - name: vision_annotations_gcs
       description: Output GCS bucket name.
-    - name: vision_entrypoint_url
-      description: The URL for requesting online prediction with HTTP request.
     - name: vision_input_gcs
       description: Input GCS bucket name.
   requirements:

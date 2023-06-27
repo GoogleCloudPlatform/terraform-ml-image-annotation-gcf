@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+/*
 output "vision_entrypoint_url" {
   description = "The URL for requesting online prediction with HTTP request."
   value       = module.cloudfunctions.function_uri
 }
+*/
 
 output "vision_input_gcs" {
   description = "Input GCS bucket name."
