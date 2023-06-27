@@ -81,7 +81,7 @@ module "storage" {
   ]
 
   gcf_location = var.gcf_location
-
+  labels       = var.labels
 }
 
 module "cloudfunctions" {
@@ -100,4 +100,5 @@ module "cloudfunctions" {
 
   gcf_annotation_features = var.gcf_annotation_features
   gcf_log_level           = var.gcf_log_level
+  labels                  = var.labels
 }
