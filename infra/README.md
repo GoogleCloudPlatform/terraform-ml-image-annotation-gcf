@@ -32,6 +32,7 @@ Sample infrastructure detailed description.
 | gcf\_max\_instance\_count | MAX number of GCF instances | `number` | `10` | no |
 | gcf\_require\_http\_authentication | Require authentication. Manage authorized users with Cloud IAM. | `bool` | `false` | no |
 | gcf\_timeout\_seconds | GCF execution timeout | `number` | `120` | no |
+| labels | A map of key/value label pairs to assign to the resources. | `map(string)` | <pre>{<br>  "app": "terraform-ml-image-annotation-gcf"<br>}</pre> | no |
 | project\_id | GCP project ID. | `string` | n/a | yes |
 | time\_to\_enable\_apis | Time to enable APIs, approximate estimate is 5 minutes, can be more. | `string` | `"420s"` | no |
 

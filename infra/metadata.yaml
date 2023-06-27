@@ -24,6 +24,7 @@ spec:
     source:
       repo: https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf.git
       sourceType: git
+      dir: /infra
     description:
       tagline: Sample infrastructure tagline.
       detailed: Sample infrastructure detailed description.
@@ -73,6 +74,11 @@ spec:
       description: GCF execution timeout
       varType: number
       defaultValue: 120
+    - name: labels
+      description: A map of key/value label pairs to assign to the resources.
+      varType: map(string)
+      defaultValue:
+        app: terraform-ml-image-annotation-gcf
     - name: project_id
       description: GCP project ID.
       varType: string
