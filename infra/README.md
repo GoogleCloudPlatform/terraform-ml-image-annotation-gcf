@@ -27,7 +27,7 @@ Sample infrastructure detailed description.
 |------|-------------|------|---------|:--------:|
 | gcf\_annotation\_features | Requested annotation features. | `string` | `"FACE_DETECTION,PRODUCT_SEARCH,SAFE_SEARCH_DETECTION"` | no |
 | gcf\_http\_ingress\_type\_index | Ingres type index. | `number` | `0` | no |
-| gcf\_location | GCF deployment location/region. | `string` | `"us-west4"` | no |
+| region | GCF deployment location/region. | `string` | `"us-west4"` | no |
 | gcf\_log\_level | Set logging level for cloud functions. | `string` | `""` | no |
 | gcf\_max\_instance\_count | MAX number of GCF instances | `number` | `10` | no |
 | gcf\_require\_http\_authentication | Require authentication. Manage authorized users with Cloud IAM. | `bool` | `false` | no |
