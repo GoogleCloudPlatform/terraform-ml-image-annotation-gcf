@@ -75,3 +75,13 @@ variable "gcf_log_level" {
   default     = ""
   # options are empty string or python logging level: NOTSET, DEBUG,INFO, WARNING, ERROR, CRITICAL
 }
+
+
+variable "labels" {
+  description = "A map of key/value label pairs to assign to the resources."
+  type        = map(string)
+
+  default = {
+    app = "terraform-ml-image-annotation-gcf"
+  }
+}

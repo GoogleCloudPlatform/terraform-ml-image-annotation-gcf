@@ -18,3 +18,8 @@ variable "gcf_location" {
   description = "GCS deployment region."
   type        = string
 }
+
+variable "labels" {
+  description = "A map of key/value label pairs to assign to the resources."
+  type        = map(string)
+}

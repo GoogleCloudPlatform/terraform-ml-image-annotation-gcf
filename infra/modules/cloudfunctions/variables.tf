@@ -80,3 +80,8 @@ variable "gcf_log_level" {
   type        = string
   description = "Set logging level for cloud functions."
 }
+
+variable "labels" {
+  description = "A map of key/value label pairs to assign to the resources."
+  type        = map(string)
+}
