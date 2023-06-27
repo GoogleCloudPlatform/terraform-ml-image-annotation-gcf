@@ -77,7 +77,7 @@ resource "google_project_iam_member" "gcf_sa_roles" {
 
 resource "google_cloudfunctions2_function" "annotate_http" {
   name        = "annotate-http"
-  labels      = var.labels  
+  labels      = var.labels
   location    = var.gcf_location
   description = "Vision API Image Annotate via HTTP, external"
   depends_on = [
