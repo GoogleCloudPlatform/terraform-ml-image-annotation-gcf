@@ -55,6 +55,9 @@ spec:
         project_id:
           name: project_id
           title: Project Id
+        region:
+          name: region
+          title: Region
         time_to_enable_apis:
           name: time_to_enable_apis
           title: Time To Enable Apis
