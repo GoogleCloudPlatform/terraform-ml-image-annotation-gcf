@@ -54,10 +54,6 @@ spec:
       description: Ingres type index.
       varType: number
       defaultValue: 0
-    - name: gcf_location
-      description: GCF deployment location/region.
-      varType: string
-      defaultValue: us-west4
     - name: gcf_log_level
       description: Set logging level for cloud functions.
       varType: string
@@ -83,6 +79,10 @@ spec:
       description: GCP project ID.
       varType: string
       required: true
+    - name: region
+      description: GCF deployment location/region.
+      varType: string
+      defaultValue: us-west4
     - name: time_to_enable_apis
       description: Time to enable APIs, approximate estimate is 5 minutes, can be more.
       varType: string
