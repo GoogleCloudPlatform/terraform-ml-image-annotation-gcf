@@ -24,7 +24,7 @@ spec:
     source:
       repo: https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf.git
       sourceType: git
-      dir: /infra/modules/cloudfunctions
+      dir: cloudfunctions
     actuationTool:
       flavor: Terraform
       version: '>= 0.13'
