@@ -58,7 +58,7 @@ data "google_compute_zones" "cz_available" {
     google_project_service.enabled
   ]
   project = var.project_id
-  region  = var.gcf_location
+  region  = var.region
 }
 
 # Service Account for GCS, generates/publishes bucket events.
@@ -80,7 +80,7 @@ module "storage" {
     data.google_compute_zones.cz_available
   ]
 
-  gcf_location = var.gcf_location
+  gcf_location = var.region
   labels       = var.labels
 }
 
@@ -88,7 +88,7 @@ module "cloudfunctions" {
   source     = "./modules/cloudfunctions"
   depends_on = [time_sleep.wait_for_apis]
 
-  gcf_location           = var.gcf_location
+  gcf_location           = var.region
   gcf_max_instance_count = var.gcf_max_instance_count
   gcf_timeout_seconds    = var.gcf_timeout_seconds
 
