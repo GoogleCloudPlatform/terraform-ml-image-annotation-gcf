@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-output "vision_entrypoint_url" {
+output "vision_prediction_url" {
   description = "The URL for requesting online prediction with HTTP request."
   value       = module.cloudfunctions.function_uri
 }

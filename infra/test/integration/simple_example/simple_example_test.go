@@ -46,7 +46,7 @@ func TestSimpleExample(t *testing.T) {
 		// Use publicly available image url
 		imageURI := "https://storage.googleapis.com/cft_test_data/annotate_images/ML20682781.jpg"
 		features := []string{"FACE_DETECTION", "OBJECT_LOCALIZATION", "IMAGE_PROPERTIES", "LABEL_DETECTION", "SAFE_SEARCH_DETECTION"}
-		visionEntrypointUrlArr := strings.Fields(example.GetStringOutput("vision_entrypoint_url"))
+		visionEntrypointUrlArr := strings.Fields(example.GetStringOutput("vision_prediction_url"))
 		annotateUrl := strings.Trim(visionEntrypointUrlArr[0], "[]") + "/annotate"
 
 		// Check if the vision annotations bucket exists
