@@ -17,6 +17,7 @@
 | gcr\_invoker\_members | IAM members. | `list(string)` | <pre>[<br>  "allUsers"<br>]</pre> | no |
 | gcr\_role\_invoker | IAM role GCR invoker. | `string` | `"roles/run.invoker"` | no |
 | input-bucket | Input bucket name | `string` | n/a | yes |
+| labels | A map of key/value label pairs to assign to the resources. | `map(string)` | n/a | yes |
 
 ## Outputs
 
