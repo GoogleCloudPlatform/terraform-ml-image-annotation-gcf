@@ -39,3 +39,8 @@ output "annotate_http_function_name" {
   description = "The name of the cloud function that annotates an image triggered by an HTTP request."
   value       = module.simple.annotate_http_function_name
 }
+
+output "source_code_url" {
+  description = "The URL of the source code for Cloud Functions."
+  value       = module.simple.source_code_url
+}

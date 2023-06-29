@@ -39,6 +39,11 @@ output "annotate_http_function_name" {
   value       = module.cloudfunctions.annotate_http_function_name
 }
 
+output "source_code_url" {
+  description = "The URL of the source code for Cloud Functions."
+  value       = "gs://${module.cloudfunctions.code_bucket}/${module.cloudfunctions.source_code_filename}"
+}
+
 output "neos_walkthrough_url" {
   description = "Neos Tutorial URL"
   value       = "https://console.cloud.google.com/products/solutions/deployments?walkthrough_id=panels--sic--image-processing-gcf_toc"

@@ -43,6 +43,8 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210217184823-a52172cd2f64 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
+	github.com/parnurzeal/gorequest v0.2.16 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/tidwall/gjson v1.12.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
@@ -69,5 +71,6 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 	k8s.io/kube-openapi v0.0.0-20210421082810-95288971da7e // indirect
+	moul.io/http2curl v1.0.0 // indirect
 	sigs.k8s.io/kustomize/kyaml v0.11.0 // indirect
 )
