@@ -24,6 +24,7 @@
 | Name | Description |
 |------|-------------|
 | annotate\_gcs\_function\_name | The name of the cloud function that annotates an image triggered by a GCS event. |
+| annotate\_http\_function\_name | The name of the cloud function that annotates an image triggered by an HTTP request. |
 | function\_uri | Cloud Function URI and ingress parameters. |
 | gcf\_sa | Cloud Functions SA. |
 | gcs\_account | Cloud StorageS SA. |

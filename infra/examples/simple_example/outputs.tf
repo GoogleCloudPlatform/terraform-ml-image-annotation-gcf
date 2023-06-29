@@ -34,3 +34,8 @@ output "annotate_gcs_function_name" {
   description = "The name of the cloud function that annotates an image triggered by a GCS event."
   value       = module.simple.annotate_gcs_function_name
 }
+
+output "annotate_http_function_name" {
+  description = "The name of the cloud function that annotates an image triggered by an HTTP request."
+  value       = module.simple.annotate_http_function_name
+}
