@@ -36,6 +36,7 @@ resource "google_storage_bucket" "code_bucket" {
   location                    = var.gcf_location                                                    # the same as where GCF resides
   uniform_bucket_level_access = true
   force_destroy               = true
+  labels                      = var.labels
 }
 
 # The archive in Cloud Stoage uses the md5 of the zip file
@@ -76,6 +77,7 @@ resource "google_project_iam_member" "gcf_sa_roles" {
 
 resource "google_cloudfunctions2_function" "annotate_http" {
   name        = "annotate-http"
+  labels      = var.labels
   location    = var.gcf_location
   description = "Vision API Image Annotate via HTTP, external"
   depends_on = [
@@ -147,6 +149,7 @@ resource "google_cloudfunctions2_function" "annotate_gcs" {
     data.google_storage_project_service_account.gcs_account
   ]
   name        = "annotate_gcs"
+  labels      = var.labels
   location    = var.gcf_location
   description = "Vision API Image Annotate with GCS"
 
