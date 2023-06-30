@@ -17,6 +17,10 @@ import io
 import json
 import os
 import sys
+
+# Imports Python standard library logging
+# Logs show fine in the Cloud Logs explorer, but in GCF LOGS, they show HTTP logging request.
+import logging
 from typing import Dict, List, Optional, OrderedDict
 from urllib import parse
 
@@ -24,8 +28,6 @@ import functions_framework
 from flask import Request, Response, make_response, send_file
 from google.cloud import logging as cloud_logging
 from google.cloud import storage, vision
-
-import tracer_helper
 
 FEATURES_ENV = "FEATURES"
 INPUT_BUCKET_ENV = "INPUT_BUCKET"
@@ -44,17 +46,10 @@ logging_client = cloud_logging.Client()
 # at INFO level and higher
 logging_client.setup_logging()
 
-# Get cloud tracer
-tracer = tracer_helper.get_tracer(__name__)
-
 # The name of the log to write to
 LOG_NAME = "vision-api"
 # Selects the log to write to
 logger = logging_client.logger(LOG_NAME)
-
-# Imports Python standard library logging
-# Logs show fine in the Cloud Logs explorer, but in GCF LOGS, they show HTTP logging request.
-import logging
 
 # By default, disable logging for production:
 logging.disable(sys.maxsize)
@@ -65,7 +60,6 @@ if log_level:
     logging.getLogger().setLevel(log_level)
 
 
-@tracer.start_as_current_span("read_vision_image_from_gcs")
 def read_vision_image_from_gcs(
     bucket_name: str, file_name: str
 ) -> Optional[vision.Image]:
@@ -91,7 +85,6 @@ def read_vision_image_from_gcs(
     return None
 
 
-@tracer.start_as_current_span("get_all_vision_features")
 def get_all_vision_features() -> List[Dict[str, vision.Feature.Type]]:
     """Gets a list of all Vision features.
 
@@ -101,7 +94,6 @@ def get_all_vision_features() -> List[Dict[str, vision.Feature.Type]]:
     return [{"type_": feature} for feature in vision.Feature.Type if feature != 0]
 
 
-@tracer.start_as_current_span("get_feature_by_name")
 def get_feature_by_name(feature_name: str) -> Optional[vision.Feature.Type]:
     """Gets a vision feature if it exists.
 
@@ -118,7 +110,6 @@ def get_feature_by_name(feature_name: str) -> Optional[vision.Feature.Type]:
     return None
 
 
-@tracer.start_as_current_span("build_features_list")
 def build_features_list(feature_names: str) -> Optional[list]:
     """Gets a list of Vision features for given list of names.
 
@@ -138,7 +129,6 @@ def build_features_list(feature_names: str) -> Optional[list]:
     return features_list
 
 
-@tracer.start_as_current_span("annotate_image_uri")
 def annotate_image_uri(image_uri: str, detect_features: Optional[list] = None) -> str:
     """Calculate annotations for the image referenced by the URI.
 
@@ -147,7 +137,8 @@ def annotate_image_uri(image_uri: str, detect_features: Optional[list] = None) -
         detect_features: a list of Vision Feature Types
 
     Returns:
-        string: JSON with annotations built from vision.AnnotateImageResponse"""
+        string: JSON with annotations built from vision.AnnotateImageResponse
+    """
 
     logging.info("Annotate image: %s", image_uri)
     vision_client = vision.ImageAnnotatorClient()
@@ -162,7 +153,6 @@ def annotate_image_uri(image_uri: str, detect_features: Optional[list] = None) -
     return json_string
 
 
-@tracer.start_as_current_span("annotate_image")
 def annotate_image(
     vision_image: vision.Image, detect_features: Optional[list] = None
 ) -> str:
@@ -173,7 +163,8 @@ def annotate_image(
         detect_features: a list of Vision Feature Types
 
     Returns:
-        string: JSON with annotations built from vision.AnnotateImageResponse"""
+        string: JSON with annotations built from vision.AnnotateImageResponse
+    """
     logging.info("annotate_image()")
     vision_client = vision.ImageAnnotatorClient()
     logging.info("Building Request")
@@ -187,7 +178,6 @@ def annotate_image(
 # ------- GCS ------
 
 
-@tracer.start_as_current_span("gcs_write")
 def gcs_write(bucket_name, file_name, content):
     """Write and read a blob from GCS using file-like IO.
 
@@ -205,13 +195,11 @@ def gcs_write(bucket_name, file_name, content):
         fp.write(content)
 
 
-@tracer.start_as_current_span("json_filename_for_image")
 def json_filename_for_image(file_name: str) -> str:
     """Returns name of the JSON file for source image file name."""
     return file_name + ".json"
 
 
-@tracer.start_as_current_span("image_filename_for_json")
 def image_filename_for_json(file_name: str) -> str:
     """Returns name of the image file name for annotation JSON file name."""
     path_items = os.path.splitext(file_name)
@@ -219,7 +207,6 @@ def image_filename_for_json(file_name: str) -> str:
 
 
 # Triggered when a new object is created in the GCS bucket.
-@tracer.start_as_current_span("annotate_gcs")
 @functions_framework.cloud_event
 def annotate_gcs(cloud_event):
     """Annotate image dropped into GCS bucket.
@@ -273,7 +260,7 @@ def annotate_gcs(cloud_event):
         logging.info(
             f"{event_id}: Loaded {image_file_name} as vision.Image, executing annotations."
         )
-        json_result = annotate_image(vision_image, None)
+        json_result = annotate_image(vision_image, features_list)
         logging.info(f"{event_id}: Annotated image {image_file_name}")
         if json_result:
             logging.info(
@@ -288,7 +275,6 @@ def annotate_gcs(cloud_event):
 # -------------  DEMO UI utilities  ----------------------
 
 
-@tracer.start_as_current_span("list_bucket")
 def list_bucket(
     bucket_name: str, max_results: Optional[int] = 2048
 ) -> Optional[List[storage.Blob]]:
@@ -297,12 +283,11 @@ def list_bucket(
     try:
         blobs = storage_client.list_blobs(bucket_name, max_results=max_results)
         return blobs
-    except:
+    except Exception:
         pass
     return None
 
 
-@tracer.start_as_current_span("read_blob")
 def read_blob(bucket_name: str, file_name: str) -> Optional[str]:
     """Read an object from the bucket.
 
@@ -320,12 +305,11 @@ def read_blob(bucket_name: str, file_name: str) -> Optional[str]:
     try:
         with blob.open("rb") as fp:
             content = fp.read()
-    except:
+    except Exception:
         return None
     return content
 
 
-@tracer.start_as_current_span("read_json_str")
 def read_json_str(bucket_name: str, file_name: str) -> Optional[str]:
     """
     Read JSON file from GCS bucket.
@@ -345,12 +329,11 @@ def read_json_str(bucket_name: str, file_name: str) -> Optional[str]:
         if json_str:
             json_obj = json.loads(json_str)
             return json_obj
-    except:
+    except Exception:
         pass
     return None
 
 
-@tracer.start_as_current_span("get_list_of_files")
 def get_list_of_files(
     imagess_bucket: str,
     annotations_bucket: str,
@@ -364,12 +347,12 @@ def get_list_of_files(
     if start:
         try:
             range_start = int(start)
-        except ValueError as ex:
+        except ValueError:
             pass
     if end:
         try:
             range_end = int(end)
-        except ValueError as ex:
+        except ValueError:
             pass
     if embed:
         try:
@@ -377,7 +360,7 @@ def get_list_of_files(
             # limit numbwer to something reasonable
             if num_embedded_annotations > NUM_EMBEDDED_ANNOTATIONS_MAX:
                 num_embedded_annotations = NUM_EMBEDDED_ANNOTATIONS_MAX
-        except ValueError as ex:
+        except ValueError:
             pass
     # list images
     image_blobs = list_bucket(imagess_bucket, range_end)
@@ -400,7 +383,7 @@ def get_list_of_files(
     for image_blob in image_blobs:
         json_filename = json_filename_for_image(image_blob.name)
         if json_filename in list_of_annotation_names:
-            # optionally fill in JSON annotations, but only if number of files is6 small
+            # optionally fill in JSON annotations, but only if number of files is small
             if num_embedded_annotations > 0:
                 json_content = read_json_str(annotations_bucket, json_filename)
                 num_embedded_annotations -= 1
@@ -416,7 +399,6 @@ def get_list_of_files(
     return make_response(json.dumps(list_of_names, indent=2), 200)
 
 
-@tracer.start_as_current_span("get_image")
 def get_image(imagess_bucket, image_name):
     image = read_blob(imagess_bucket, image_name)
     if image:
@@ -429,7 +411,6 @@ def get_image(imagess_bucket, image_name):
     return make_response("Image not found: %s" % image_name, 404)
 
 
-@tracer.start_as_current_span("get_annotation")
 def get_annotation(annotations_bucket, annotation_name):
     json = read_json_str(annotations_bucket, annotation_name)
     if json:
@@ -437,11 +418,11 @@ def get_annotation(annotations_bucket, annotation_name):
     return make_response("Annotation not found: %s" % annotation_name, 404)
 
 
-@tracer.start_as_current_span("handle_bucket")
 def handle_bucket(request: Request):
     """Decode request and dispatch handling to the functions.
 
-    Used by the demo UI to display images and annotation results from batch processing in the GCS buckets.
+    Used by the demo UI to display images and annotation results
+    from batch processing in the GCS buckets.
 
     Args:
         request: Flask HTTP request.aborter
@@ -490,7 +471,6 @@ def handle_bucket(request: Request):
     return make_response(result, error_code)
 
 
-@tracer.start_as_current_span("handle_annotation")
 def handle_annotation(request):
     """Executes online image annotations.
 
@@ -573,7 +553,6 @@ def handle_annotation(request):
     return make_response("Annotation result is None.", 500)
 
 
-@tracer.start_as_current_span("annotate_http")
 @functions_framework.http
 def annotate_http(request):
     """HTTP Cloud Function.

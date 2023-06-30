@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-output "vision_entrypoint_url" {
+output "vision_prediction_url" {
   description = "The URL for requesting online prediction with HTTP request."
   value       = module.cloudfunctions.function_uri
 }
@@ -29,7 +29,12 @@ output "vision_annotations_gcs" {
   value       = "gs://${module.storage.gcs_annotations}"
 }
 
+output "annotate_gcs_function_name" {
+  description = "The name of the cloud function that annotates an image triggered by a GCS event."
+  value       = module.cloudfunctions.annotate_gcs_function_name
+}
+
 output "neos_walkthrough_url" {
   description = "Neos Tutorial URL"
-  value       = "https://console.cloud.google.com/products/solutions/deployments?walkthrough_id=solutions-in-console--image-processing--image-processing-gcf_tour"
+  value       = "https://console.cloud.google.com/products/solutions/deployments?walkthrough_id=panels--sic--image-processing-gcf_toc"
 }

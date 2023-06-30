@@ -21,6 +21,24 @@ data "google_project" "project" {
   project_id = var.project_id
 }
 
+resource "google_project_service_identity" "eventarc" {
+  provider = google-beta
+
+  project = data.google_project.project.project_id
+  service = "eventarc.googleapis.com"
+
+  depends_on = [
+    google_project_service.enabled
+  ]
+}
+
+resource "google_project_iam_member" "eventarc_sa_role" {
+  project = data.google_project.project.project_id
+  role    = "roles/eventarc.serviceAgent"
+  member  = "serviceAccount:${google_project_service_identity.eventarc.email}"
+}
+
+
 resource "null_resource" "previous_time" {}
 
 # gate resource creation until APIs are enabled, using approximate timeout
@@ -28,7 +46,8 @@ resource "null_resource" "previous_time" {}
 resource "time_sleep" "wait_for_apis" {
   depends_on = [
     null_resource.previous_time,
-    google_project_service.enabled
+    google_project_service.enabled,
+    google_project_iam_member.eventarc_sa_role
   ]
 
   create_duration = var.time_to_enable_apis
@@ -39,7 +58,7 @@ data "google_compute_zones" "cz_available" {
     google_project_service.enabled
   ]
   project = var.project_id
-  region  = var.gcf_location
+  region  = var.region
 }
 
 # Service Account for GCS, generates/publishes bucket events.
@@ -61,15 +80,15 @@ module "storage" {
     data.google_compute_zones.cz_available
   ]
 
-  gcf_location = var.gcf_location
-
+  gcf_location = var.region
+  labels       = var.labels
 }
 
 module "cloudfunctions" {
   source     = "./modules/cloudfunctions"
   depends_on = [time_sleep.wait_for_apis]
 
-  gcf_location           = var.gcf_location
+  gcf_location           = var.region
   gcf_max_instance_count = var.gcf_max_instance_count
   gcf_timeout_seconds    = var.gcf_timeout_seconds
 
@@ -81,4 +100,5 @@ module "cloudfunctions" {
 
   gcf_annotation_features = var.gcf_annotation_features
   gcf_log_level           = var.gcf_log_level
+  labels                  = var.labels
 }

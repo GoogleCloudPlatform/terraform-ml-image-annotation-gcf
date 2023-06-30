@@ -19,3 +19,4 @@ Some important files and folders.
 | /src/gcf           | Backend Cloud Functions code that calls the Vision API for image processing.         |
 | /infra             | Terraform infrastructure for deploying the solution.                                 |
 | /.github/workflows | Github workflows for CI and testing                                                  |
+| /build             | Cloud Build configuration files for CFT testing.                                     |
