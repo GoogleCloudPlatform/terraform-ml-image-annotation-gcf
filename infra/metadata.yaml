@@ -1,0 +1,109 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: blueprints.cloud.google.com/v1alpha1
+kind: BlueprintMetadata
+metadata:
+  name: terraform-ml-image-annotation-gcf
+  annotations:
+    config.kubernetes.io/local-config: "true"
+spec:
+  info:
+    title: Infrastructure for image annotation with ML and GCF
+    source:
+      repo: https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf.git
+      sourceType: git
+    description:
+      tagline: Sample infrastructure tagline.
+      detailed: Sample infrastructure detailed description.
+      architecture:
+      - Cloud Functions
+      - Vision API
+      - Cloud Storage
+  content:
+    documentation:
+    - title: Architecture Diagram
+      url: todo
+    subBlueprints:
+    - name: cloudfunctions
+      location: modules/cloudfunctions
+    - name: storage
+      location: modules/storage
+    examples:
+    - name: simple_example
+      location: examples/simple_example
+  interfaces:
+    variables:
+    - name: gcf_annotation_features
+      description: Requested annotation features.
+      varType: string
+      defaultValue: FACE_DETECTION,PRODUCT_SEARCH,SAFE_SEARCH_DETECTION
+    - name: gcf_http_ingress_type_index
+      description: Ingres type index.
+      varType: number
+      defaultValue: 0
+    - name: gcf_log_level
+      description: Set logging level for cloud functions.
+      varType: string
+      defaultValue: ""
+    - name: gcf_max_instance_count
+      description: MAX number of GCF instances
+      varType: number
+      defaultValue: 10
+    - name: gcf_require_http_authentication
+      description: Require authentication. Manage authorized users with Cloud IAM.
+      varType: bool
+      defaultValue: false
+    - name: gcf_timeout_seconds
+      description: GCF execution timeout
+      varType: number
+      defaultValue: 120
+    - name: labels
+      description: A map of key/value label pairs to assign to the resources.
+      varType: map(string)
+      defaultValue:
+        app: terraform-ml-image-annotation-gcf
+    - name: project_id
+      description: GCP project ID.
+      varType: string
+      required: true
+    - name: region
+      description: GCF deployment location/region.
+      varType: string
+      defaultValue: us-west4
+    - name: time_to_enable_apis
+      description: Time to enable APIs, approximate estimate is 5 minutes, can be more.
+      varType: string
+      defaultValue: 420s
+    outputs:
+    - name: annotate_gcs_function_name
+      description: The name of the cloud function that annotates an image triggered by a GCS event.
+    - name: neos_walkthrough_url
+      description: Neos Tutorial URL
+    - name: vision_annotations_gcs
+      description: Output GCS bucket name.
+    - name: vision_input_gcs
+      description: Input GCS bucket name.
+    - name: vision_prediction_url
+      description: The URL for requesting online prediction with HTTP request.
+  requirements:
+    roles:
+    - level: Project
+      roles:
+      - roles/owner
+    services:
+    - cloudresourcemanager.googleapis.com
+    - iam.googleapis.com
+    - storage.googleapis.com
+    - serviceusage.googleapis.com
