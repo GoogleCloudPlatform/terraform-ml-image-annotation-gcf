@@ -22,6 +22,7 @@ resource "google_storage_bucket" "vision-input" {
   location                    = var.gcf_location
   uniform_bucket_level_access = true
   force_destroy               = true
+  labels                      = var.labels
 }
 
 # output bucket for prediction JSON files
@@ -30,4 +31,5 @@ resource "google_storage_bucket" "vision-annotations" {
   location                    = var.gcf_location
   uniform_bucket_level_access = true
   force_destroy               = true
+  labels                      = var.labels
 }

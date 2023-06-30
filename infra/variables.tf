@@ -29,10 +29,10 @@ variable "time_to_enable_apis" {
   default     = "420s"
 }
 
-variable "gcf_location" {
+variable "region" {
   description = "GCF deployment location/region."
   type        = string
-  default     = "us-west4" #us-central1
+  default     = "us-west4"
 }
 
 variable "gcf_max_instance_count" {
@@ -74,4 +74,14 @@ variable "gcf_log_level" {
   description = "Set logging level for cloud functions."
   default     = ""
   # options are empty string or python logging level: NOTSET, DEBUG,INFO, WARNING, ERROR, CRITICAL
+}
+
+
+variable "labels" {
+  description = "A map of key/value label pairs to assign to the resources."
+  type        = map(string)
+
+  default = {
+    app = "terraform-ml-image-annotation-gcf"
+  }
 }

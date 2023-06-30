@@ -1,0 +1,112 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: blueprints.cloud.google.com/v1alpha1
+kind: BlueprintMetadata
+metadata:
+  name: terraform-ml-image-annotation-gcf-cloudfunctions
+  annotations:
+    config.kubernetes.io/local-config: "true"
+spec:
+  info:
+    title: cloudfunctions module
+    source:
+      repo: https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf.git
+      sourceType: git
+      dir: cloudfunctions
+    actuationTool:
+      flavor: Terraform
+      version: '>= 0.13'
+    description: {}
+  content:
+    examples:
+    - name: simple_example
+      location: examples/simple_example
+  interfaces:
+    variables:
+    - name: annotations-bucket
+      description: Annotations bucket name
+      varType: string
+      required: true
+    - name: gcf_annotation_features
+      description: Requested annotation features.
+      varType: string
+      required: true
+    - name: gcf_http_ingress_type_index
+      description: Ingres type index.
+      varType: number
+      required: true
+    - name: gcf_http_ingress_types_list
+      description: Ingres type values
+      varType: list(any)
+      defaultValue:
+      - ALLOW_ALL
+      - ALLOW_INTERNAL_ONLY
+      - ALLOW_INTERNAL_AND_GCLB
+    - name: gcf_location
+      description: GCF deployment region
+      varType: string
+      required: true
+    - name: gcf_log_level
+      description: Set logging level for cloud functions.
+      varType: string
+      required: true
+    - name: gcf_max_instance_count
+      description: MAX number of GCF instances
+      varType: number
+      required: true
+    - name: gcf_require_http_authentication
+      description: Create HTTP API with public, unauthorized access.
+      varType: bool
+      required: true
+    - name: gcf_timeout_seconds
+      description: GCF execution timeout
+      varType: number
+      required: true
+    - name: gcr_invoker_members
+      description: IAM members.
+      varType: list(string)
+      defaultValue:
+      - allUsers
+    - name: gcr_role_invoker
+      description: IAM role GCR invoker.
+      varType: string
+      defaultValue: roles/run.invoker
+    - name: input-bucket
+      description: Input bucket name
+      varType: string
+      required: true
+    - name: labels
+      description: A map of key/value label pairs to assign to the resources.
+      varType: map(string)
+      required: true
+    outputs:
+    - name: annotate_gcs_function_name
+      description: The name of the cloud function that annotates an image triggered by a GCS event.
+    - name: function_uri
+      description: Cloud Function URI and ingress parameters.
+    - name: gcf_sa
+      description: Cloud Functions SA.
+    - name: gcs_account
+      description: Cloud StorageS SA.
+  requirements:
+    roles:
+    - level: Project
+      roles:
+      - roles/owner
+    services:
+    - cloudresourcemanager.googleapis.com
+    - iam.googleapis.com
+    - storage.googleapis.com
+    - serviceusage.googleapis.com

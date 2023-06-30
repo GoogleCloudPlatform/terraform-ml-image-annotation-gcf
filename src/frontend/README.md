@@ -7,7 +7,7 @@ This project was created with [Vite](https://vitejs.dev/).
 It uses the following technologies:
 
 - [React](https://reactjs.org)
-- [Material UI](https://mui.com)
+- [DaisyUI](https://daisyui.com)
 - [@tanstack/react-query](https://github.com/tanstack/query)
 
 ## Available Commands

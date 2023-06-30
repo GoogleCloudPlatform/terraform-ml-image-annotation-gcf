@@ -26,9 +26,10 @@ const config: VitestUserConfigInterface = {
         coverage: {
             include: ['src/**/*'],
             exclude: ['src/main.tsx', 'src/vite-env.d.ts', 'src/tests'],
-            all: true,            
+            all: true,
         }
     },
 }
 
 export default config
+

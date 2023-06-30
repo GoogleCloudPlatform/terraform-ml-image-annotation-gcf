@@ -24,7 +24,13 @@ output "vision_input_gcs" {
   value       = module.simple.vision_input_gcs
 }
 
-output "vision_entrypoint_url" {
+
+output "vision_prediction_url" {
   description = "The URL for requesting online prediction with HTTP request."
-  value       = module.simple.vision_entrypoint_url
+  value       = module.simple.vision_prediction_url
+}
+
+output "annotate_gcs_function_name" {
+  description = "The name of the cloud function that annotates an image triggered by a GCS event."
+  value       = module.simple.annotate_gcs_function_name
 }
