@@ -65,10 +65,12 @@ func TestSimpleExample(t *testing.T) {
 		assert.NotEmpty(storage)
 
 		// Check Cloud Function status and trigger region
+		var match []string
 		annotateGcsFunctionName := example.GetStringOutput("annotate_gcs_function_name")
 		annotateGcsFunctionRegion := ""
 		annotateHttpFunctionName := example.GetStringOutput("annotate_http_function_name")
 		annotateHttpFunctionRegion := ""
+		annotateFunctionSelfLink := fmt.Sprintf("functions/%s", annotateHttpFunctionName)
 		functions := gcloud.Run(t, ("functions list --format=json"), gcloudArgs).Array()
 		for _, function := range functions {
 			state := function.Get("state").String()
@@ -80,12 +82,12 @@ func TestSimpleExample(t *testing.T) {
 				annotateGcsFunctionRegion = eventTrigger.Get("triggerRegion").String()
 				fmt.Printf("triggerRegion: %s\n", annotateGcsFunctionRegion)
 			}
-			if strings.Contains(functionName, "functions/" + annotateHttpFunctionName) {
+			if strings.Contains(functionName, annotateFunctionSelfLink) {
 				reg := regexp.MustCompile(`locations/([^/]+)/`)
-				match := reg.FindStringSubmatch(functionName)
-				if len(match) > 1 {
-					annotateHttpFunctionRegion = match[1]
-				}
+				match = reg.FindStringSubmatch(functionName)
+			}
+			if len(match) > 1 {
+				annotateHttpFunctionRegion = match[1]
 			}
 		}
 		assert.NotEmpty(annotateGcsFunctionRegion)
