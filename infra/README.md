@@ -41,7 +41,9 @@ Sample infrastructure detailed description.
 | Name | Description |
 |------|-------------|
 | annotate\_gcs\_function\_name | The name of the cloud function that annotates an image triggered by a GCS event. |
+| annotate\_http\_function\_name | The name of the cloud function that annotates an image triggered by an HTTP request. |
 | neos\_walkthrough\_url | Neos Tutorial URL |
+| source\_code\_url | The URL of the source code for Cloud Functions. |
 | vision\_annotations\_gcs | Output GCS bucket name. |
 | vision\_input\_gcs | Input GCS bucket name. |
 | vision\_prediction\_url | The URL for requesting online prediction with HTTP request. |
