@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.2](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/compare/v0.1.1...v0.1.2) (2023-07-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency clsx to v2 ([#51](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/51)) ([bfc7734](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/bfc7734873c032d9d63edf819bf3fbf29d426284))
+* pinning google provider &lt; 4.75.0 ([#53](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/53)) ([a5d543d](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/a5d543d14fe87d8a28fbb774388d260ce3996f57))
+
 ## [0.1.1](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/compare/v0.1.0...v0.1.1) (2023-07-20)
 
 
