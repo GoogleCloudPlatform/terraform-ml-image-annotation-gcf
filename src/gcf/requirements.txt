@@ -5,3 +5,5 @@ google-cloud-logging
 opentelemetry-api
 opentelemetry-sdk
 opentelemetry-exporter-gcp-trace
+google-cloud-aiplatform
+google-cloud-pubsub
