@@ -44,8 +44,6 @@ spec:
       varType: map(string)
       required: true
     outputs:
-    - name: gcs_annotations
-      description: Output GCS bucket name.
     - name: gcs_input
       description: Input GCS bucket name.
   requirements:

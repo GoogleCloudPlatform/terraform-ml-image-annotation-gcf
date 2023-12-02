@@ -26,9 +26,6 @@ spec:
   ui:
     input:
       variables:
-        annotations-bucket:
-          name: annotations-bucket
-          title: Annotations-Bucket
         gcf_annotation_features:
           name: gcf_annotation_features
           title: Gcf Annotation Features

@@ -25,11 +25,6 @@ variable "input-bucket" {
   type        = string
 }
 
-variable "annotations-bucket" {
-  description = "Annotations bucket name"
-  type        = string
-}
-
 variable "gcr_invoker_members" {
   type        = list(string)
   description = "IAM members."

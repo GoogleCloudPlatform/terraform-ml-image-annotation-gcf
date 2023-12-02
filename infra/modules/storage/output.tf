@@ -19,8 +19,3 @@ output "gcs_input" {
   description = "Input GCS bucket name."
   value       = google_storage_bucket.vision-input.name
 }
-
-output "gcs_annotations" {
-  description = "Output GCS bucket name."
-  value       = google_storage_bucket.vision-annotations.name
-}

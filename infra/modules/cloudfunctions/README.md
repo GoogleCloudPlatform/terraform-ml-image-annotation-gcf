@@ -5,7 +5,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| annotations-bucket | Annotations bucket name | `string` | n/a | yes |
 | gcf\_annotation\_features | Requested annotation features. | `string` | n/a | yes |
 | gcf\_http\_ingress\_type\_index | Ingres type index. | `number` | n/a | yes |
 | gcf\_http\_ingress\_types\_list | Ingres type values | `list(any)` | <pre>[<br>  "ALLOW_ALL",<br>  "ALLOW_INTERNAL_ONLY",<br>  "ALLOW_INTERNAL_AND_GCLB"<br>]</pre> | no |

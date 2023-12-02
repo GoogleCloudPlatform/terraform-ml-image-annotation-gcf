@@ -12,7 +12,6 @@
 
 | Name | Description |
 |------|-------------|
-| gcs\_annotations | Output GCS bucket name. |
 | gcs\_input | Input GCS bucket name. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

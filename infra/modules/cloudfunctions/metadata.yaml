@@ -35,10 +35,6 @@ spec:
       location: examples/simple_example
   interfaces:
     variables:
-    - name: annotations-bucket
-      description: Annotations bucket name
-      varType: string
-      required: true
     - name: gcf_annotation_features
       description: Requested annotation features.
       varType: string
@@ -108,5 +104,5 @@ spec:
     services:
     - cloudresourcemanager.googleapis.com
     - iam.googleapis.com
-    - storage.googleapis.com
+    - pubsub.googleapis.com
     - serviceusage.googleapis.com

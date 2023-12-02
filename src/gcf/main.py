@@ -90,9 +90,6 @@ if log_level:
 #####################
 ##### Clients #######
 #####################
-# Create all the clients that can be reused
-# Storage client for GCS
-storage_client = storage.Client()
 # VQA V1 client 
 image_qna_model = ImageQnAModel.from_pretrained("imagetext@001")
 # Pub/Sub client
@@ -114,6 +111,7 @@ def vqa (
         number_of_results=num_results
     )
 
+# Unused in the code 
 # Helper function to split apart the GCS URI 
 def decode_gcs_url(
         url: str
@@ -131,6 +129,7 @@ def read_file_from_gcs(
         bucket: str,
         file_path: str
         ) -> bytes:
+    storage_client = storage.Client()
     bucket = storage_client.bucket(bucket)
     blob = bucket.blob(file_path)
     # Return the object as bytes
@@ -170,7 +169,8 @@ def pub_sub_write(
     futures.wait(publish_futures, return_when=futures.ALL_COMPLETED)
 
 def list_bucket_object_names(
-        bucket_name: str, max_results: Optional[int] = 2048
+        bucket_name: str, 
+        max_results: Optional[int] = 2048
     ) -> Optional[List[storage.Blob]]:
     """Lists all the objects in the bucket."""
     storage_client = storage.Client()
@@ -201,7 +201,7 @@ def read_and_infer(
         vqa_question: str,
         vqa_num_results: int,
         image_bucket: str,
-        image_list: list(str)
+        image_list: list[str]
     ) -> None:
     payload_list = []
     for image_file_name in image_list:

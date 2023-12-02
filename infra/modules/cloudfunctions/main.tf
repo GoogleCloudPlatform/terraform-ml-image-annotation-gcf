@@ -101,7 +101,6 @@ resource "google_cloudfunctions2_function" "annotate_http" {
     available_memory   = "256M"
     environment_variables = {
       INPUT_BUCKET       = var.input-bucket
-      ANNOTATIONS_BUCKET = var.annotations-bucket
       FEATURES           = var.gcf_annotation_features
       LOG_LEVEL          = var.gcf_log_level
     }
@@ -173,7 +172,6 @@ resource "google_cloudfunctions2_function" "annotate_gcs" {
     available_memory   = "256M"
     environment_variables = {
       INPUT_BUCKET       = var.input-bucket
-      ANNOTATIONS_BUCKET = var.annotations-bucket
       FEATURES           = var.gcf_annotation_features
       LOG_LEVEL          = var.gcf_log_level
     }

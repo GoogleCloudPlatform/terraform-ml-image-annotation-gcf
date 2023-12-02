@@ -14,13 +14,32 @@
  * limitations under the License.
  */
 
-data "google_project" "project" {}
-
-# input bucket for images
-resource "google_storage_bucket" "vision-input" {
-  name                        = "vision-input-${data.google_project.project.number}"
-  location                    = var.gcf_location
-  uniform_bucket_level_access = true
-  force_destroy               = true
-  labels                      = var.labels
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = ">= 4.52, < 6"
+    }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = ">= 4.52, < 6"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 2"
+    }
+    archive = {
+      source  = "hashicorp/archive"
+      version = ">= 2"
+    }
+    time = {
+      source  = "hashicorp/time"
+      version = ">= 0.9.1"
+    }
+    http = {
+      source  = "hashicorp/http"
+      version = ">= 2"
+    }
+  }
+  required_version = ">= 0.13"
 }
