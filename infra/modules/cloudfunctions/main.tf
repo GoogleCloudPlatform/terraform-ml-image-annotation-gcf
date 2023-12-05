@@ -103,7 +103,6 @@ resource "google_cloudfunctions2_function" "annotate_http" {
     available_memory   = "256M"
     environment_variables = {
       INPUT_BUCKET = var.input-bucket
-      FEATURES     = var.gcf_annotation_features
       LOG_LEVEL    = var.gcf_log_level
     }
     ingress_settings               = var.gcf_http_ingress_types_list[var.gcf_http_ingress_type_index]
