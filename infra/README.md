@@ -25,6 +25,8 @@ Sample infrastructure detailed description.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| enable\_apis | Whether or not to enable underlying apis for BigQuery solution. | `string` | `true` | no |
+| force\_destroy | Whether or not to protect BigQuery resources from deletion when solution is modified or changed. | `string` | `false` | no |
 | gcf\_annotation\_features | Requested annotation features. | `string` | `"FACE_DETECTION,PRODUCT_SEARCH,SAFE_SEARCH_DETECTION"` | no |
 | gcf\_http\_ingress\_type\_index | Ingres type index. | `number` | `0` | no |
 | gcf\_log\_level | Set logging level for cloud functions. | `string` | `""` | no |

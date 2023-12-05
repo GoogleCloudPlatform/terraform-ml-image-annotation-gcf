@@ -26,6 +26,12 @@ spec:
   ui:
     input:
       variables:
+        enable_apis:
+          name: enable_apis
+          title: Enable Apis
+        force_destroy:
+          name: force_destroy
+          title: Force Destroy
         gcf_annotation_features:
           name: gcf_annotation_features
           title: Gcf Annotation Features

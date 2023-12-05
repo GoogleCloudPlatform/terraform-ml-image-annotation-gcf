@@ -98,4 +98,4 @@ variable "labels" {
 }
 
 # Need to add BigQuery Dataset , Table
-# Need to add Pub/Sub topic 
+# Need to add Pub/Sub topic

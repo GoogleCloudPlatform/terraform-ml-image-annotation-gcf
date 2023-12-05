@@ -48,6 +48,14 @@ spec:
         location: examples/simple_example
   interfaces:
     variables:
+      - name: enable_apis
+        description: Whether or not to enable underlying apis for BigQuery solution.
+        varType: string
+        defaultValue: true
+      - name: force_destroy
+        description: Whether or not to protect BigQuery resources from deletion when solution is modified or changed.
+        varType: string
+        defaultValue: false
       - name: gcf_annotation_features
         description: Requested annotation features.
         varType: string
