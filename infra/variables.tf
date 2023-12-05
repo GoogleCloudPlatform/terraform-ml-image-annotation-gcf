@@ -76,6 +76,17 @@ variable "gcf_log_level" {
   # options are empty string or python logging level: NOTSET, DEBUG,INFO, WARNING, ERROR, CRITICAL
 }
 
+variable "force_destroy" {
+  type        = string
+  description = "Whether or not to protect BigQuery resources from deletion when solution is modified or changed."
+  default     = false
+}
+
+variable "enable_apis" {
+  type        = string
+  description = "Whether or not to enable underlying apis for BigQuery solution."
+  default     = true
+}
 
 variable "labels" {
   description = "A map of key/value label pairs to assign to the resources."
@@ -85,3 +96,6 @@ variable "labels" {
     app = "terraform-ml-image-annotation-gcf"
   }
 }
+
+# Need to add BigQuery Dataset , Table
+# Need to add Pub/Sub topic 

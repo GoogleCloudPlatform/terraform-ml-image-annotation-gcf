@@ -102,5 +102,16 @@ module "cloudfunctions" {
   labels                  = var.labels
 }
 
-// Need to add BigQuery service 
-// Need to add Pub/Sub service 
+// Need to add BigQuery service
+module "data_warehouse" {
+  source     = "./modules/data_warehouse"
+  depends_on = [time_sleep.wait_for_apis]
+  project_id = var.project_id
+  region     = var.region
+
+  force_destroy = var.force_destroy
+  enable_apis   = var.enable_apis
+  labels        = var.labels
+}
+
+// Need to add Pub/Sub service
