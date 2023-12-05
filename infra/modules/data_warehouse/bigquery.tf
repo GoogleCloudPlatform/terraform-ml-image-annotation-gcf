@@ -39,22 +39,3 @@ resource "google_bigquery_table" "tbl_edw_products" {
   schema = file("${path.module}/src/schema/products_schema.json")
   labels = var.labels
 }
-
-# # Add Sample Queries
-resource "google_bigquery_routine" "sp_sample_queries" {
-  project      = module.project-services.project_id
-  dataset_id   = google_bigquery_dataset.ds_edw.dataset_id
-  routine_id   = "sp_sample_queries"
-  routine_type = "PROCEDURE"
-  language     = "SQL"
-  definition_body = templatefile("${path.module}/src/sql/sp_sample_queries.sql", {
-    project_id = module.project-services.project_id,
-    dataset_id = google_bigquery_dataset.ds_edw.dataset_id
-    }
-  )
-
-  depends_on = [
-    google_bigquery_table.tbl_edw_inventory_items,
-    google_bigquery_table.tbl_edw_order_items,
-  ]
-}

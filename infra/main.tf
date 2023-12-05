@@ -93,7 +93,6 @@ module "cloudfunctions" {
   gcf_timeout_seconds    = var.gcf_timeout_seconds
 
   input-bucket       = module.storage.gcs_input
-  annotations-bucket = module.storage.gcs_annotations
 
   gcf_http_ingress_type_index     = var.gcf_http_ingress_type_index
   gcf_require_http_authentication = var.gcf_require_http_authentication
@@ -102,3 +101,6 @@ module "cloudfunctions" {
   gcf_log_level           = var.gcf_log_level
   labels                  = var.labels
 }
+
+// Need to add BigQuery service 
+// Need to add Pub/Sub service 
