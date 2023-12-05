@@ -66,6 +66,7 @@ resource "google_project_iam_member" "gcf_sa_roles" {
     "roles/logging.logWriter",       # logging
     "roles/artifactregistry.reader", # function deployment
     "roles/pubsub.publisher",        # Write to Pub/Sub
+    "roles/aiplatform.user",         # Vertex AI APIs
   ])
   role   = each.key
   member = "serviceAccount:${google_service_account.gcf_sa.email}"
@@ -101,9 +102,9 @@ resource "google_cloudfunctions2_function" "annotate_http" {
     timeout_seconds    = var.gcf_timeout_seconds
     available_memory   = "256M"
     environment_variables = {
-      INPUT_BUCKET       = var.input-bucket
-      FEATURES           = var.gcf_annotation_features
-      LOG_LEVEL          = var.gcf_log_level
+      INPUT_BUCKET = var.input-bucket
+      FEATURES     = var.gcf_annotation_features
+      LOG_LEVEL    = var.gcf_log_level
     }
     ingress_settings               = var.gcf_http_ingress_types_list[var.gcf_http_ingress_type_index]
     all_traffic_on_latest_revision = true
@@ -172,9 +173,9 @@ resource "google_cloudfunctions2_function" "annotate_gcs" {
     timeout_seconds    = var.gcf_timeout_seconds
     available_memory   = "256M"
     environment_variables = {
-      INPUT_BUCKET       = var.input-bucket
-      FEATURES           = var.gcf_annotation_features
-      LOG_LEVEL          = var.gcf_log_level
+      INPUT_BUCKET = var.input-bucket
+      FEATURES     = var.gcf_annotation_features
+      LOG_LEVEL    = var.gcf_log_level
     }
     ingress_settings               = "ALLOW_INTERNAL_ONLY"
     all_traffic_on_latest_revision = true

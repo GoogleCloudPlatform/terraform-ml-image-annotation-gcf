@@ -12,10 +12,10 @@
 # # See the License for the specific language governing permissions and
 # # limitations under the License.
 
-from unittest.mock import patch
 import unittest
 from google.cloud import storage
 from main import list_bucket_object_names
+
 
 class TestMethods(unittest.TestCase):
 
@@ -27,13 +27,14 @@ class TestMethods(unittest.TestCase):
         self.vqa_num_results = 3
 
         # Given
-        self.test_json = ('{' +
+        self.test_json = (
+            '{' +
             '"vision_api_method": "{}",'.format(self.vision_api_method) +
             '"image_bucket": "{}",'.format(self.image_bucket) +
             '"image_file": "{}",'.format(self.image_file) +
             '"vqa_question": "{}",'.format(self.vqa_question) +
             '"vqa_num_results": {}'.format(self.vqa_num_results) +
-        '}\n')
+            '}\n')
 
         self.expected_parse = (
             self.vision_api_method,
@@ -44,10 +45,12 @@ class TestMethods(unittest.TestCase):
         )
 
     @unittest.mock.patch('main.storage.Client')
-    def test_list_bucket_object_names(self,mock_client):
-        mock_client().list_blobs.return_value = [storage.Blob("blob1","path"),storage.Blob("blob2","path")]
+    def test_list_bucket_object_names(self, mock_client):
+        mock_client().list_blobs.return_value = [
+            storage.Blob("blob1", "path"), storage.Blob("blob2", "path")]
         results = list_bucket_object_names("path")
         assert len(results) == 2
-        
+
+
 if __name__ == '__main__':
     unittest.main()

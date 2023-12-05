@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import json
+# import json
 import os
 import sys
 
@@ -28,9 +28,7 @@ from google.cloud import storage
 
 from vertexai.vision_models import ImageQnAModel
 from vertexai.vision_models import Image
-#from flask import jsonify
-from google.cloud import storage
-import functions_framework
+# from flask import jsonify
 
 # Pub/Sub Imports
 from concurrent import futures
@@ -39,7 +37,7 @@ from typing import Callable
 
 
 ####################
-### Variables ######
+# Variables ########
 ####################
 
 FEATURES_ENV = "FEATURES"
@@ -57,7 +55,7 @@ project_id = os.environ.get(GCP_PROJECT_ENV, None)
 topic_id = os.environ.get(PUBSUB_TOPIC_ENV, None)
 
 #####################
-##### Logging #######
+# Logging ###########
 #####################
 
 # Instantiates a client
@@ -82,22 +80,24 @@ if log_level:
     logging.getLogger().setLevel(log_level)
 
 #####################
-##### Clients #######
+# Clients ###########
 #####################
-# VQA V1 client 
+# VQA V1 client
 image_qna_model = ImageQnAModel.from_pretrained("imagetext@001")
 # Pub/Sub client
 publisher = pubsub_v1.PublisherClient()
 publish_futures = []
 
 ########################
-### Pub/Sub Section ####
+# Pub/Sub Section ######
 ########################
 
 """Publishes multiple messages to a Pub/Sub topic with an error handler."""
+
+
 def get_callback(
-        publish_future: pubsub_v1.publisher.futures.Future, data: str
-    ) -> Callable[[pubsub_v1.publisher.futures.Future], None]:
+    publish_future: pubsub_v1.publisher.futures.Future, data: str
+) -> Callable[[pubsub_v1.publisher.futures.Future], None]:
     def callback(publish_future: pubsub_v1.publisher.futures.Future) -> None:
         try:
             # Wait 60 seconds for the publish call to succeed.
@@ -108,11 +108,13 @@ def get_callback(
     return callback
 
 # TODO: need to add code to split the payloads if too large
+
+
 def pub_sub_write(
-        project_id: str,
-        topic_id: str, 
-        data_payloads: list[str]
-    ) -> None:
+    project_id: str,
+    topic_id: str,
+    data_payloads: list[str]
+) -> None:
     topic_path = publisher.topic_path(project_id, topic_id)
     for data_payload in data_payloads:
         publish_future = publisher.publish(topic_path, data_payload.encode("utf-8"))
@@ -124,25 +126,28 @@ def pub_sub_write(
     futures.wait(publish_futures, return_when=futures.ALL_COMPLETED)
 
 ########################
-### Storage Section ####
+# Storage Section ######
 ########################
 
 # We can't use the image load from local file since it expects a local path
-# We use a GCS URL and get the bytes of the image 
+# We use a GCS URL and get the bytes of the image
+
+
 def read_file_from_gcs(
         bucket: str,
         file_path: str
-        ) -> bytes:
+) -> bytes:
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket)
     blob = bucket.blob(file_path)
     # Return the object as bytes
     return blob.download_as_bytes()
 
+
 def list_bucket_object_names(
-        bucket_name: str, 
-        max_results: Optional[int] = 2048
-    ) -> Optional[List[storage.Blob]]:
+    bucket_name: str,
+    max_results: Optional[int] = 2048
+) -> Optional[List[storage.Blob]]:
     """Lists all the objects in the bucket."""
     storage_client = storage.Client()
     try:
@@ -156,12 +161,13 @@ def list_bucket_object_names(
     return None
 
 ########################
-### Helper functions ###
+# Helper functions #####
 ########################
 
+
 def parse_request_json(
-        request_json: str
-    ) -> tuple[str,str,str,str,int]:
+    request_json: str
+) -> tuple[str, str, str, str, int]:
     method = request_json["vision_api_method"]
     image_bucket = request_json["image_bucket"]
     image_file = request_json["image_file"]
@@ -172,25 +178,28 @@ def parse_request_json(
         vqa_num_results = request_json["vqa_num_results"]
     return method, image_bucket, image_file, vqa_question, vqa_num_results
 
+
 def read_and_infer(
-        vqa_question: str,
-        vqa_num_results: int,
-        image_bucket: str,
-        image_list: list[str]
-    ) -> None:
+    vqa_question: str,
+    vqa_num_results: int,
+    image_bucket: str,
+    image_list: list[str]
+) -> None:
     payload_list = []
     for image_file_name in image_list:
-        image_bytes = read_file_from_gcs(image_bucket,image_file_name)
-        vqa_results = vqa(image_bytes,vqa_question,vqa_num_results)
+        image_bytes = read_file_from_gcs(image_bucket, image_file_name)
+        vqa_results = vqa(image_bytes, vqa_question, vqa_num_results)
         payload_list.append(",".join(vqa_results))
-    pub_sub_write(project_id,topic_id,payload_list)
+    pub_sub_write(project_id, topic_id, payload_list)
 
 # This is the function that calls the VQA function
-def vqa (
-        image_bytes: bytes,
-        image_prompt: str,
-        num_results: int
-    ) -> list[str]:
+
+
+def vqa(
+    image_bytes: bytes,
+    image_prompt: str,
+    num_results: int
+) -> list[str]:
     # Load the bytes into the Image handler
     input_image = Image(image_bytes)
     # Ask the VQA the question and return the results
@@ -202,7 +211,7 @@ def vqa (
 
 
 ########################
-### Entrypoints      ###
+# Entrypoints ##########
 ########################
 
 @functions_framework.http
@@ -223,7 +232,8 @@ def annotate_http(request):
     if content_type == "application/json":
         request_json = request.get_json()
 
-    api_method, image_bucket, image_file, vqa_question, vqa_num_results = parse_request_json(request_json)
+    api_method, image_bucket, image_file, vqa_question, vqa_num_results = parse_request_json(
+        request_json)
 
     image_list = []
     if image_file is not None:
@@ -232,13 +242,15 @@ def annotate_http(request):
         image_list = list_bucket_object_names(image_bucket)
 
     if api_method == "vqa":
-        read_and_infer(vqa_question,vqa_num_results,image_bucket,image_list)
+        read_and_infer(vqa_question, vqa_num_results, image_bucket, image_list)
 
     # TODO: Actually make a response
-    response = make_response("Toodles",200)
+    response = make_response("Toodles", 200)
     return response
 
 # Triggered when a new object is created in the GCS bucket.
+
+
 @functions_framework.cloud_event
 def annotate_gcs(cloud_event):
     """Annotate image dropped into GCS bucket.
@@ -269,6 +281,6 @@ def annotate_gcs(cloud_event):
         f"Received event {event_type} id={event_id} from {src_bucket} for file {image_file_name}"
     )
 
-    read_and_infer(DEFAULT_QUESTION,DEFAULT_NUMBER_OF_RESULTS,src_bucket,[image_file_name])
-    response = make_response("Toodles",200)
+    read_and_infer(DEFAULT_QUESTION, DEFAULT_NUMBER_OF_RESULTS, src_bucket, [image_file_name])
+    response = make_response("Toodles", 200)
     return response
