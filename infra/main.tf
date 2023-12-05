@@ -102,7 +102,7 @@ module "cloudfunctions" {
   labels                  = var.labels
 }
 
-// Need to add BigQuery service 
+// Need to add BigQuery service
 module "data_warehouse" {
   source     = "./modules/data_warehouse"
   depends_on = [time_sleep.wait_for_apis]
