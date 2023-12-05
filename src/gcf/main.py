@@ -12,29 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import collections
-import io
-import json
+#import json
 import os
 import sys
 
 # Imports Python standard library logging
 # Logs show fine in the Cloud Logs explorer, but in GCF LOGS, they show HTTP logging request.
 import logging
-from typing import Dict, List, Optional, OrderedDict
-from urllib import parse
+from typing import List, Optional
 
 import functions_framework
-from flask import Request, Response, make_response, send_file
+from flask import make_response
 from google.cloud import logging as cloud_logging
-from google.cloud import storage, vision
+from google.cloud import storage
 
 from vertexai.vision_models import ImageQnAModel
-from google.cloud import aiplatform
 from vertexai.vision_models import Image
-from flask import jsonify
+#from flask import jsonify
 from google.cloud import storage
-from urllib.parse import urlparse
 import functions_framework
 
 # Pub/Sub Imports
@@ -49,9 +44,10 @@ from typing import Callable
 
 FEATURES_ENV = "FEATURES"
 INPUT_BUCKET_ENV = "INPUT_BUCKET"
-ANNOTATIONS_BUCKET_ENV = "ANNOTATIONS_BUCKET"
 GCP_PROJECT_ENV = "GCP_PROJECT"
 PUBSUB_TOPIC_ENV = "PUBSUB_TOPIC"
+DEFAULT_QUESTION = "What is this"
+DEFAULT_NUMBER_OF_RESULTS = 3
 
 FILE_LIST_SIZE_MAX = 8196
 NUM_EMBEDDED_ANNOTATIONS_MAX = 10
@@ -59,8 +55,6 @@ NUM_EMBEDDED_ANNOTATIONS_MAX = 10
 TEST_IMAGE = "gs://cloud-samples-data/vision/eiffel_tower.jpg"
 project_id = os.environ.get(GCP_PROJECT_ENV, None)
 topic_id = os.environ.get(PUBSUB_TOPIC_ENV, None)
-#aiplatform.init(project=project_id)
-
 
 #####################
 ##### Logging #######
@@ -96,45 +90,6 @@ image_qna_model = ImageQnAModel.from_pretrained("imagetext@001")
 publisher = pubsub_v1.PublisherClient()
 publish_futures = []
 
-# This is the function that calls the VQA function
-def vqa (
-        image_bytes: bytes,
-        image_prompt: str,
-        num_results: int
-    ) -> list[str]:
-    # Load the bytes into the Image handler
-    input_image = Image(image_bytes)
-    # Ask the VQA the question and return the results
-    return image_qna_model.ask_question(
-        image=input_image,
-        question=image_prompt,
-        number_of_results=num_results
-    )
-
-# Unused in the code 
-# Helper function to split apart the GCS URI 
-def decode_gcs_url(
-        url: str
-    ) -> tuple[str,str] :
-    # Read the URI and parse it
-    p = urlparse(url)
-    bucket = p.netloc
-    file_path = p.path[0:].split('/', 1)
-    # Return the relevant objects (bucket, path to object)
-    return bucket, file_path[1]
-
-# We can't use the image load from local file since it expects a local path
-# We use a GCS URL and get the bytes of the image 
-def read_file_from_gcs(
-        bucket: str,
-        file_path: str
-        ) -> bytes:
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket)
-    blob = bucket.blob(file_path)
-    # Return the object as bytes
-    return blob.download_as_bytes()
-
 ########################
 ### Pub/Sub Section ####
 ########################
@@ -168,6 +123,22 @@ def pub_sub_write(
     # Wait for all the publish futures to resolve before exiting.
     futures.wait(publish_futures, return_when=futures.ALL_COMPLETED)
 
+########################
+### Storage Section ####
+########################
+
+# We can't use the image load from local file since it expects a local path
+# We use a GCS URL and get the bytes of the image 
+def read_file_from_gcs(
+        bucket: str,
+        file_path: str
+        ) -> bytes:
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket)
+    blob = bucket.blob(file_path)
+    # Return the object as bytes
+    return blob.download_as_bytes()
+
 def list_bucket_object_names(
         bucket_name: str, 
         max_results: Optional[int] = 2048
@@ -184,14 +155,18 @@ def list_bucket_object_names(
         pass
     return None
 
+########################
+### Helper functions ###
+########################
+
 def parse_request_json(
         request_json: str
     ) -> tuple[str,str,str,str,int]:
     method = request_json["vision_api_method"]
     image_bucket = request_json["image_bucket"]
     image_file = request_json["image_file"]
-    vqa_question = None
-    vqa_num_results = None
+    vqa_question = DEFAULT_QUESTION
+    vqa_num_results = DEFAULT_NUMBER_OF_RESULTS
     if method == "vqa":
         vqa_question = request_json["vqa_question"]
         vqa_num_results = request_json["vqa_num_results"]
@@ -209,6 +184,26 @@ def read_and_infer(
         vqa_results = vqa(image_bytes,vqa_question,vqa_num_results)
         payload_list.append(",".join(vqa_results))
     pub_sub_write(project_id,topic_id,payload_list)
+
+# This is the function that calls the VQA function
+def vqa (
+        image_bytes: bytes,
+        image_prompt: str,
+        num_results: int
+    ) -> list[str]:
+    # Load the bytes into the Image handler
+    input_image = Image(image_bytes)
+    # Ask the VQA the question and return the results
+    return image_qna_model.ask_question(
+        image=input_image,
+        question=image_prompt,
+        number_of_results=num_results
+    )
+
+
+########################
+### Entrypoints      ###
+########################
 
 @functions_framework.http
 def annotate_http(request):
@@ -274,7 +269,6 @@ def annotate_gcs(cloud_event):
         f"Received event {event_type} id={event_id} from {src_bucket} for file {image_file_name}"
     )
 
-    default_question = "What is this"
-    default_number_of_results = 3
-
-    read_and_infer(default_question,default_number_of_results,src_bucket,[image_file_name])
+    read_and_infer(DEFAULT_QUESTION,DEFAULT_NUMBER_OF_RESULTS,src_bucket,[image_file_name])
+    response = make_response("Toodles",200)
+    return response
