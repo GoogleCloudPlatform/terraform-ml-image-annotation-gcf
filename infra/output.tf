@@ -24,11 +24,6 @@ output "vision_input_gcs" {
   value       = "gs://${module.storage.gcs_input}"
 }
 
-output "vision_annotations_gcs" {
-  description = "Output GCS bucket name."
-  value       = "gs://${module.storage.gcs_annotations}"
-}
-
 output "annotate_gcs_function_name" {
   description = "The name of the cloud function that annotates an image triggered by a GCS event."
   value       = module.cloudfunctions.annotate_gcs_function_name

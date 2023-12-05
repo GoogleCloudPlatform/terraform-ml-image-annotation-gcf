@@ -30,12 +30,12 @@ resource "google_bigquery_dataset" "ds_edw" {
 
 ## Need to update
 # # Create a table for the data
-resource "google_bigquery_table" "tbl_edw_products" {
-  dataset_id          = google_bigquery_dataset.ds_edw.dataset_id
-  table_id            = "products"
-  project             = module.project-services.project_id
-  deletion_protection = var.deletion_protection
+# resource "google_bigquery_table" "tbl_edw_products" {
+#   dataset_id          = google_bigquery_dataset.ds_edw.dataset_id
+#   table_id            = "products"
+#   project             = module.project-services.project_id
+#   deletion_protection = var.deletion_protection
 
-  schema = file("${path.module}/src/schema/products_schema.json")
-  labels = var.labels
-}
+#   schema = file("${path.module}/src/schema/products_schema.json")
+#   labels = var.labels
+# }
