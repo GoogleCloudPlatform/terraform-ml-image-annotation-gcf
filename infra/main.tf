@@ -92,7 +92,7 @@ module "cloudfunctions" {
   gcf_max_instance_count = var.gcf_max_instance_count
   gcf_timeout_seconds    = var.gcf_timeout_seconds
 
-  input-bucket       = module.storage.gcs_input
+  input-bucket = module.storage.gcs_input
 
   gcf_http_ingress_type_index     = var.gcf_http_ingress_type_index
   gcf_require_http_authentication = var.gcf_require_http_authentication
