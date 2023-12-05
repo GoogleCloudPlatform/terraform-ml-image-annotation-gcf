@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-output "vision_annotations_gcs" {
-  description = "Cloud Storage of the vision annotations"
-  value       = module.simple.vision_annotations_gcs
-}
-
 output "vision_input_gcs" {
   description = "Cloud Storage of the vision input"
   value       = module.simple.vision_input_gcs
 }
-
 
 output "vision_prediction_url" {
   description = "The URL for requesting online prediction with HTTP request."
