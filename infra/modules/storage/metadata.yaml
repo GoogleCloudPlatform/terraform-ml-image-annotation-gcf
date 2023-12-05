@@ -24,35 +24,42 @@ spec:
     source:
       repo: https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf.git
       sourceType: git
-      dir: storage
+      dir: /infra/modules/storage
     actuationTool:
       flavor: Terraform
-      version: '>= 0.13'
+      version: ">= 0.13"
     description: {}
   content:
     examples:
-    - name: simple_example
-      location: examples/simple_example
+      - name: simple_example
+        location: examples/simple_example
   interfaces:
     variables:
-    - name: gcf_location
-      description: GCS deployment region.
-      varType: string
-      required: true
-    - name: labels
-      description: A map of key/value label pairs to assign to the resources.
-      varType: map(string)
-      required: true
+      - name: gcf_location
+        description: GCS deployment region.
+        varType: string
+        defaultValue: null
+        required: true
+      - name: labels
+        description: A map of key/value label pairs to assign to the resources.
+        varType: map(string)
+        defaultValue: null
+        required: true
     outputs:
-    - name: gcs_input
-      description: Input GCS bucket name.
+      - name: gcs_input
+        description: Input GCS bucket name.
   requirements:
     roles:
-    - level: Project
-      roles:
-      - roles/owner
+      - level: Project
+        roles:
+          - roles/resourcemanager.projectIamAdmin
+          - roles/serviceusage.serviceUsageAdmin
+          - roles/iam.serviceAccountAdmin
+          - roles/storage.admin
+          - roles/run.admin
+          - roles/editor
     services:
-    - cloudresourcemanager.googleapis.com
-    - iam.googleapis.com
-    - storage.googleapis.com
-    - serviceusage.googleapis.com
+      - cloudresourcemanager.googleapis.com
+      - iam.googleapis.com
+      - storage.googleapis.com
+      - serviceusage.googleapis.com
