@@ -19,9 +19,6 @@ from main import list_bucket_object_names
 
 
 class TestMethods(unittest.TestCase):
-
-    @unittest.mock.patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "mytemp.json"},
-                              clear=True)
     def setUp(self):
         self.vision_api_method = "vqa"
         self.image_bucket = "cloud-samples-data"
@@ -47,6 +44,8 @@ class TestMethods(unittest.TestCase):
             self.vqa_num_results
         )
 
+    @unittest.mock.patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "mytemp.json"},
+                              clear=True)
     @unittest.mock.patch('main.storage.Client')
     def test_list_bucket_object_names(self, mock_client):
         mock_client().list_blobs.return_value = [
