@@ -141,7 +141,7 @@ def read_file_from_gcs(
 def list_bucket_object_names(
     bucket_name: str,
     max_results: Optional[int] = 2048
-) -> Optional[List[storage.Blob]]:
+) -> Optional[List[str]]:
     """Lists all the objects in the bucket."""
     storage_client = storage.Client()
     try:
