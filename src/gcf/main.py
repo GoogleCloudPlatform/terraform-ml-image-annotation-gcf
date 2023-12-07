@@ -19,7 +19,7 @@ import sys
 # Imports Python standard library logging
 # Logs show fine in the Cloud Logs explorer, but in GCF LOGS, they show HTTP logging request.
 import logging
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import functions_framework
 from flask import make_response
@@ -161,7 +161,7 @@ def list_bucket_object_names(
 
 def parse_request_json(
     request_json: str
-) -> tuple[str, str, str, str, int]:
+) -> Tuple[str, str, str, str, int]:
     method = request_json["vision_api_method"]
     image_bucket = request_json["image_bucket"]
     image_file = request_json["image_file"]
