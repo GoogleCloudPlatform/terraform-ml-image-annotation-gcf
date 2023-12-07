@@ -1,0 +1,55 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import unittest
+import json
+from main import parse_request_json
+
+
+class test_jsons(unittest.TestCase):
+
+    def setUp(self):
+        self.vision_api_method = "vqa"
+        self.image_bucket = "cloud-samples-data"
+        self.image_file = "vision/eiffel_tower.jpg"
+        self.vqa_question = "What is this"
+        self.vqa_num_results = 3
+
+        # Given
+        self.test_json = (
+            '{' +
+            '"vision_api_method": "{}",'.format(self.vision_api_method) +
+            '"image_bucket": "{}",'.format(self.image_bucket) +
+            '"image_file": "{}",'.format(self.image_file) +
+            '"vqa_question": "{}",'.format(self.vqa_question) +
+            '"vqa_num_results": {}'.format(self.vqa_num_results) +
+            '}\n')
+
+        self.expected_parse = (
+            self.vision_api_method,
+            self.image_bucket,
+            self.image_file,
+            self.vqa_question,
+            self.vqa_num_results
+        )
+
+    def test_parse_json_request(self):
+        # When
+        result = parse_request_json(json.loads(self.test_json))
+        # Then
+        self.assertTupleEqual(self.expected_parse, result)
+
+
+if __name__ == '__main__':
+    unittest.main()
