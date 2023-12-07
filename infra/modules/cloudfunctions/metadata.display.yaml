@@ -26,9 +26,6 @@ spec:
   ui:
     input:
       variables:
-        gcf_annotation_features:
-          name: gcf_annotation_features
-          title: Gcf Annotation Features
         gcf_http_ingress_type_index:
           name: gcf_http_ingress_type_index
           title: Gcf Http Ingress Type Index

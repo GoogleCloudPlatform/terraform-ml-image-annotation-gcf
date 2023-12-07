@@ -66,11 +66,6 @@ variable "gcf_require_http_authentication" {
   description = "Create HTTP API with public, unauthorized access."
 }
 
-variable "gcf_annotation_features" {
-  type        = string
-  description = "Requested annotation features."
-}
-
 variable "gcf_log_level" {
   type        = string
   description = "Set logging level for cloud functions."

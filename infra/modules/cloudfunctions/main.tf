@@ -173,7 +173,6 @@ resource "google_cloudfunctions2_function" "annotate_gcs" {
     available_memory   = "256M"
     environment_variables = {
       INPUT_BUCKET = var.input-bucket
-      FEATURES     = var.gcf_annotation_features
       LOG_LEVEL    = var.gcf_log_level
     }
     ingress_settings               = "ALLOW_INTERNAL_ONLY"

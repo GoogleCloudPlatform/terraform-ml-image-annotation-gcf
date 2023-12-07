@@ -35,11 +35,6 @@ spec:
         location: examples/simple_example
   interfaces:
     variables:
-      - name: gcf_annotation_features
-        description: Requested annotation features.
-        varType: string
-        defaultValue: null
-        required: true
       - name: gcf_http_ingress_type_index
         description: Ingres type index.
         varType: number
