@@ -32,5 +32,4 @@ def test_list_bucket_object_names(mocker):
     expected_result = [storage.Blob("blob1", None), storage.Blob("blob2", None)]
     client_mock.list_blobs.return_value = expected_result
     object_list = list_bucket_object_names(bucket_name)
-    
     assert len(object_list) == 2
