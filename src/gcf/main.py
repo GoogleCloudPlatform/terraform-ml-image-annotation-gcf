@@ -104,7 +104,7 @@ def get_callback(
 def pub_sub_write(
     project_id: str,
     topic_id: str,
-    data_payloads: list[str]
+    data_payloads: List[str]
 ) -> None:
     # Pub/Sub client
     publisher = pubsub_v1.PublisherClient()
@@ -177,7 +177,7 @@ def read_and_infer(
     vqa_question: str,
     vqa_num_results: int,
     image_bucket: str,
-    image_list: list[str]
+    image_list: List[str]
 ) -> None:
     payload_list = []
     for image_file_name in image_list:
@@ -193,7 +193,7 @@ def vqa(
     image_bytes: bytes,
     image_prompt: str,
     num_results: int
-) -> list[str]:
+) -> List[str]:
     # VQA V1 client
     image_qna_model = ImageQnAModel.from_pretrained("imagetext@001")
     # Load the bytes into the Image handler
