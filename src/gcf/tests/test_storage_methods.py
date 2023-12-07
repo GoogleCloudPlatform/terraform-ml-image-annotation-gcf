@@ -13,7 +13,6 @@
 # # limitations under the License.
 
 import unittest
-import os
 from google.cloud import storage
 from main import list_bucket_object_names
 
@@ -44,8 +43,6 @@ class TestMethods(unittest.TestCase):
             self.vqa_num_results
         )
 
-    @unittest.mock.patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "mytemp.json"},
-                              clear=True)
     @unittest.mock.patch('main.storage.Client', autospec=True)
     def test_list_bucket_object_names(self, mock_client):
         mock_client().list_blobs.return_value = [
