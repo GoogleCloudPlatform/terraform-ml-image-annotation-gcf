@@ -46,7 +46,7 @@ class TestMethods(unittest.TestCase):
 
     @unittest.mock.patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "mytemp.json"},
                               clear=True)
-    @unittest.mock.patch('main.storage.Client')
+    @unittest.mock.patch('main.storage.Client', autospec=True)
     def test_list_bucket_object_names(self, mock_client):
         mock_client().list_blobs.return_value = [
             storage.Blob("blob1", "path"), storage.Blob("blob2", "path")]
