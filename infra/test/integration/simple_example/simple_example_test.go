@@ -62,7 +62,7 @@ func TestSimpleExample(t *testing.T) {
 
 		testParams := TestParams{t, assert, example, projectId}
 		// Check if the vision input and annotations buckets exists
-		outputBucketName, inputBucketName := testBucketExists(testParams)
+		inputBucketName := testBucketExists(testParams)
 
 		// Check Cloud Function status and trigger region
 		annotateGcsFunctionName, annotateGcsFunctionRegion, annotateHttpFunctionName, annotateHttpFunctionRegion := testFunctionExists(testParams)
@@ -71,7 +71,7 @@ func TestSimpleExample(t *testing.T) {
 		testNormalAnnotateApi(testParams, annotateUrl, imageUri, features)
 
 		// Update the environment variables of the Cloud Function and verify the annotation feature
-		testUpdateFunctionEnv(testParams, annotateGcsFunctionName, annotateGcsFunctionRegion, annotateHttpFunctionName, annotateHttpFunctionRegion, inputBucketName, outputBucketName,
+		testUpdateFunctionEnv(testParams, annotateGcsFunctionName, annotateGcsFunctionRegion, annotateHttpFunctionName, annotateHttpFunctionRegion, inputBucketName,
 			annotateUrl, imageUri, features)
 	})
 	example.Test()
@@ -79,16 +79,12 @@ func TestSimpleExample(t *testing.T) {
 
 func testBucketExists(testParams TestParams) (string, string) {
 	gcloudArgs := gcloud.WithCommonArgs([]string{"--project", testParams.projectId})
-	// Check if the vision annotations bucket exists
-	outputBucketName := testParams.example.GetStringOutput("vision_annotations_gcs")
-	storage := gcloud.Run(testParams.t, fmt.Sprintf("storage buckets describe %s --format=json", outputBucketName), gcloudArgs)
-	testParams.assert.NotEmpty(storage)
 
 	// Check if the vision input bucket exists
 	inputBucketName := testParams.example.GetStringOutput("vision_input_gcs")
 	storage = gcloud.Run(testParams.t, fmt.Sprintf("storage buckets describe %s --format=json", inputBucketName), gcloudArgs)
 	testParams.assert.NotEmpty(storage)
-	return outputBucketName, inputBucketName
+	return inputBucketName
 }
 
 func testFunctionExists(testParams TestParams) (string, string, string, string) {
@@ -160,7 +156,7 @@ func testNormalAnnotateApi(testParams TestParams, annotateUrl string, imageUri s
 }
 
 func testUpdateFunctionEnv(testParams TestParams, annotateGcsFunctionName string, annotateGcsFunctionRegion string, annotateHttpFunctionName string, annotateHttpFunctionRegion string,
-		inputBucketName string, outputBucketName string, annotateUrl string, imageUri string, features []string) {
+		inputBucketName string, annotateUrl string, imageUri string, features []string) {
 	gcloudArgs := gcloud.WithCommonArgs([]string{"--project", testParams.projectId})
 	// Update annotate_gcs env vars
 	sourceCodeUrl := testParams.example.GetStringOutput("source_code_url")
@@ -193,18 +189,6 @@ func testUpdateFunctionEnv(testParams TestParams, annotateGcsFunctionName string
 	err := json.Unmarshal([]byte(body), &annotateResult)
 	testParams.assert.NoError(err)
 	textAnnotations := annotateResult["textAnnotations"].([]interface{})
-	testParams.assert.NotEmpty(textAnnotations)
-
-	// Check the annotation result file
-	testResultJsonFileName := testFileName + ".json"
-	gcloud.Run(testParams.t, fmt.Sprintf("storage cp %s/%s testfile/ --format=json", outputBucketName, testResultJsonFileName), gcloudArgs)
-	jsonFile, err := os.Open(fmt.Sprintf("testfile/%s", testResultJsonFileName))
-	testParams.assert.NoError(err)
-	defer jsonFile.Close()
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-	err = json.Unmarshal(byteValue, &annotateResult)
-	testParams.assert.NoError(err)
-	textAnnotations = annotateResult["textAnnotations"].([]interface{})
 	testParams.assert.NotEmpty(textAnnotations)
 
 	// Check the RESTful API error code
