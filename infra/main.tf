@@ -97,7 +97,6 @@ module "cloudfunctions" {
   gcf_http_ingress_type_index     = var.gcf_http_ingress_type_index
   gcf_require_http_authentication = var.gcf_require_http_authentication
 
-  gcf_annotation_features = var.gcf_annotation_features
   gcf_log_level           = var.gcf_log_level
   labels                  = var.labels
 }
