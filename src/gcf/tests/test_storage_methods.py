@@ -20,6 +20,8 @@ from main import list_bucket_object_names
 
 class TestMethods(unittest.TestCase):
 
+    @unittest.mock.patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "mytemp.json"},
+                              clear=True)
     def setUp(self):
         self.vision_api_method = "vqa"
         self.image_bucket = "cloud-samples-data"
@@ -47,14 +49,10 @@ class TestMethods(unittest.TestCase):
 
     @unittest.mock.patch('main.storage.Client')
     def test_list_bucket_object_names(self, mock_client):
-        k = unittest.mock.patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "mytemp.json"},
-                                     clear=True)
-        k.start()
         mock_client().list_blobs.return_value = [
             storage.Blob("blob1", "path"), storage.Blob("blob2", "path")]
         results = list_bucket_object_names("path")
         assert len(results) == 2
-        k.stop()
 
 
 if __name__ == '__main__':
