@@ -14,9 +14,6 @@
 
 name: Backend tests
 
-env:
-  GOOGLE_APPLICATION_CREDENTIALS: test.json
-
 on:
   push:
     branches:
