@@ -24,8 +24,6 @@ import (
 	"strings"
 	"regexp"
 	"encoding/json"
-	"os"
-	"io/ioutil"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
@@ -77,12 +75,12 @@ func TestSimpleExample(t *testing.T) {
 	example.Test()
 }
 
-func testBucketExists(testParams TestParams) (string, string) {
+func testBucketExists(testParams TestParams) (string) {
 	gcloudArgs := gcloud.WithCommonArgs([]string{"--project", testParams.projectId})
 
 	// Check if the vision input bucket exists
 	inputBucketName := testParams.example.GetStringOutput("vision_input_gcs")
-	storage = gcloud.Run(testParams.t, fmt.Sprintf("storage buckets describe %s --format=json", inputBucketName), gcloudArgs)
+	storage := gcloud.Run(testParams.t, fmt.Sprintf("storage buckets describe %s --format=json", inputBucketName), gcloudArgs)
 	testParams.assert.NotEmpty(storage)
 	return inputBucketName
 }
