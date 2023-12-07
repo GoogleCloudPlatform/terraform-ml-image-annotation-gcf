@@ -79,15 +79,6 @@ if log_level:
     logging.disable(logging.NOTSET)
     logging.getLogger().setLevel(log_level)
 
-#####################
-# Clients ###########
-#####################
-# VQA V1 client
-image_qna_model = ImageQnAModel.from_pretrained("imagetext@001")
-# Pub/Sub client
-publisher = pubsub_v1.PublisherClient()
-publish_futures = []
-
 ########################
 # Pub/Sub Section ######
 ########################
@@ -115,6 +106,9 @@ def pub_sub_write(
     topic_id: str,
     data_payloads: list[str]
 ) -> None:
+    # Pub/Sub client
+    publisher = pubsub_v1.PublisherClient()
+    publish_futures = []
     topic_path = publisher.topic_path(project_id, topic_id)
     for data_payload in data_payloads:
         publish_future = publisher.publish(topic_path, data_payload.encode("utf-8"))
@@ -200,6 +194,8 @@ def vqa(
     image_prompt: str,
     num_results: int
 ) -> list[str]:
+    # VQA V1 client
+    image_qna_model = ImageQnAModel.from_pretrained("imagetext@001")
     # Load the bytes into the Image handler
     input_image = Image(image_bytes)
     # Ask the VQA the question and return the results
