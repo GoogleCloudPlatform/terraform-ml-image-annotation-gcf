@@ -31,11 +31,6 @@ data "archive_file" "functions" {
   source_dir  = local.functions_src_folder
 }
 
-import {
-  id = "${local.code_bucket_prefix}-${data.google_project.project.number}"
-  to = google_storage_bucket.code_bucket
-}
-
 # resource "google_storage_bucket" "code_bucket" {
 #   name                        = "${local.code_bucket_prefix}-${data.google_project.project.number}" # Every bucket name must be globally unique
 #   location                    = var.gcf_location                                                    # the same as where GCF resides
