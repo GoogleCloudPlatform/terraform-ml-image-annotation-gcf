@@ -31,14 +31,13 @@ data "archive_file" "functions" {
   source_dir  = local.functions_src_folder
 }
 
-# Already exists in storage tf
-# resource "google_storage_bucket" "code_bucket" {
-#   name                        = "${local.code_bucket_prefix}-${data.google_project.project.number}" # Every bucket name must be globally unique
-#   location                    = var.gcf_location                                                    # the same as where GCF resides
-#   uniform_bucket_level_access = true
-#   force_destroy               = true
-#   labels                      = var.labels
-# }
+resource "google_storage_bucket" "code_bucket" {
+  name                        = "${local.code_bucket_prefix}-${data.google_project.project.number}" # Every bucket name must be globally unique
+  location                    = var.gcf_location                                                    # the same as where GCF resides
+  uniform_bucket_level_access = true
+  force_destroy               = true
+  labels                      = var.labels
+}
 
 # The archive in Cloud Stoage uses the md5 of the zip file
 # This ensures the Function is redeployed only when the source is changed.
@@ -51,12 +50,11 @@ resource "google_storage_bucket_object" "gcf_code" {
   depends_on = [google_storage_bucket.code_bucket, data.archive_file.functions]
 }
 
-# Already exists
-# # Create SA for GCF
-# resource "google_service_account" "gcf_sa" {
-#   account_id   = "gcf-sa"
-#   display_name = "Service Account - for cloud function and eventarc trigger."
-# }
+# Create SA for GCF
+resource "google_service_account" "gcf_sa" {
+  account_id   = "gcf-sa"
+  display_name = "Service Account - for cloud function and eventarc trigger."
+}
 
 # set all roles for GCF service account in one resource
 resource "google_project_iam_member" "gcf_sa_roles" {

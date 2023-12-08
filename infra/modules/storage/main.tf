@@ -16,12 +16,11 @@
 
 data "google_project" "project" {}
 
-# Already exists
-# # input bucket for images
-# resource "google_storage_bucket" "vision-input" {
-#   name                        = "vision-input-${data.google_project.project.number}"
-#   location                    = var.gcf_location
-#   uniform_bucket_level_access = true
-#   force_destroy               = true
-#   labels                      = var.labels
-# }
+# input bucket for images
+resource "google_storage_bucket" "vision-input" {
+  name                        = "vision-input-${data.google_project.project.number}"
+  location                    = var.gcf_location
+  uniform_bucket_level_access = true
+  force_destroy               = true
+  labels                      = var.labels
+}
