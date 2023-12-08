@@ -114,7 +114,3 @@ module "data_warehouse" {
 }
 
 // Need to add Pub/Sub service
-import {
-  id = "${code_bucket_prefix}-${data.google_project.project.number}"
-  to = google_storage_bucket.code_bucket
-}
