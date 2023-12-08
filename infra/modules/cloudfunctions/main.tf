@@ -31,13 +31,13 @@ data "archive_file" "functions" {
   source_dir  = local.functions_src_folder
 }
 
-# resource "google_storage_bucket" "code_bucket" {
-#   name                        = "${local.code_bucket_prefix}-${data.google_project.project.number}" # Every bucket name must be globally unique
-#   location                    = var.gcf_location                                                    # the same as where GCF resides
-#   uniform_bucket_level_access = true
-#   force_destroy               = true
-#   labels                      = var.labels
-# }
+resource "google_storage_bucket" "code_bucket" {
+  name                        = "${local.code_bucket_prefix}-${data.google_project.project.number}" # Every bucket name must be globally unique
+  location                    = var.gcf_location                                                    # the same as where GCF resides
+  uniform_bucket_level_access = true
+  force_destroy               = true
+  labels                      = var.labels
+}
 
 # The archive in Cloud Stoage uses the md5 of the zip file
 # This ensures the Function is redeployed only when the source is changed.
