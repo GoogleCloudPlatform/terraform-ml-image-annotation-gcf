@@ -1,6 +1,6 @@
 module github.com/HSA-Integration/Annotate-images-with-ML-GCF/infra/test/integration
 
-go 1.20
+go 1.21
 
 require (
 	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.10.1
