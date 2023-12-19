@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/compare/v0.1.2...v0.2.0) (2023-12-19)
+
+
+### Features
+
+* allow json post data ([#100](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/100)) ([cf0f484](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/cf0f4844fb85719dde0c668d2c64047a9da86a94))
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/googlecloudplatform/cloud-foundation-toolkit/infra/blueprint-test to v0.8.1 ([#56](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/56)) ([2d9318d](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/2d9318de8b657ffc93a2cc1d10654f354124854c))
+
 ## [0.1.2](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/compare/v0.1.1...v0.1.2) (2023-07-26)
 
 
