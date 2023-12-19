@@ -492,10 +492,11 @@ def handle_annotation(request):
     features_http = None
     # read variables from POST or GET request
     if request.method == "POST":
-        logging.info("Received form in POST: form=%s" % request.form)
-        features_http = request.form.get("features")
-        image_uri = request.form.get("image_uri")
-        image_b64 = request.form.get("image")
+        content = request.form or request.json
+        logging.info("Received content in POST: content=%s" % content)
+        features_http = content.get("features")
+        image_uri = content.get("image_uri")
+        image_b64 = content.get("image")
         if image_b64:
             logging.debug("image_b64 size=%s" % len(image_b64))
             image_bin = image_b64.encode()
