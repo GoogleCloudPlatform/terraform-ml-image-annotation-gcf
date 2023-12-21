@@ -33,6 +33,7 @@ locals {
     "eventarc.googleapis.com",
     "storage.googleapis.com",
     # other:
+    "cloudaicompanion.googleapis.com",
     "iam.googleapis.com",
     "secretmanager.googleapis.com",
   ]
