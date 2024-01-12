@@ -15,9 +15,6 @@
  */
 
 data "google_project" "project" {
-  depends_on = [
-    google_project_service.enabled
-  ]
   project_id = var.project_id
 }
 
@@ -73,7 +70,7 @@ resource "time_sleep" "wait_for_apis" {
 
 data "google_compute_zones" "cz_available" {
   depends_on = [
-    google_project_service.enabled
+    module.project-services
   ]
   project = var.project_id
   region  = var.region
