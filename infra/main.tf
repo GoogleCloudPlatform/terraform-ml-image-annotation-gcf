@@ -21,23 +21,43 @@ data "google_project" "project" {
   project_id = var.project_id
 }
 
-resource "google_project_service_identity" "eventarc" {
-  provider = google-beta
+module "project-services" {
+  source                      = "terraform-google-modules/project-factory/google//modules/project_services"
+  version                     = "14.3"
+  disable_services_on_destroy = false
 
-  project = data.google_project.project.project_id
-  service = "eventarc.googleapis.com"
+  project_id  = var.project_id
+  enable_apis = var.enable_apis
 
-  depends_on = [
-    google_project_service.enabled
+  activate_apis = [
+    "compute.googleapis.com",
+    # required for GCF operation
+    "cloudfunctions.googleapis.com",
+    "logging.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "pubsub.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "run.googleapis.com",
+    # Vision API
+    "vision.googleapis.com",
+    "appengine.googleapis.com",
+    # events
+    "eventarc.googleapis.com",
+    "storage.googleapis.com",
+    # other:
+    "iam.googleapis.com",
+    "secretmanager.googleapis.com",
+  ]
+
+  activate_api_identities = [
+    {
+      api = "eventarc.googleapis.com"
+      roles = [
+        "roles/eventarc.serviceAgent",
+      ]
+    },
   ]
 }
-
-resource "google_project_iam_member" "eventarc_sa_role" {
-  project = data.google_project.project.project_id
-  role    = "roles/eventarc.serviceAgent"
-  member  = "serviceAccount:${google_project_service_identity.eventarc.email}"
-}
-
 
 resource "null_resource" "previous_time" {}
 
@@ -45,9 +65,7 @@ resource "null_resource" "previous_time" {}
 # if terraform reports an error, run "apply" again
 resource "time_sleep" "wait_for_apis" {
   depends_on = [
-    null_resource.previous_time,
-    google_project_service.enabled,
-    google_project_iam_member.eventarc_sa_role
+    module.project-services
   ]
 
   create_duration = var.time_to_enable_apis

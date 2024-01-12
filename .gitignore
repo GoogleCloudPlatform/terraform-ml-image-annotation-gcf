@@ -1,6 +1,7 @@
 # IDE
 .project
 .idea
+*.DS_Store
 
 # Other local files
 *.pyc
