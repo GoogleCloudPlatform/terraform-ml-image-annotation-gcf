@@ -25,6 +25,7 @@ Sample infrastructure detailed description.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| enable\_apis | Whether or not to enable underlying apis in this solution. | `string` | `true` | no |
 | gcf\_annotation\_features | Requested annotation features. | `string` | `"FACE_DETECTION,PRODUCT_SEARCH,SAFE_SEARCH_DETECTION"` | no |
 | gcf\_http\_ingress\_type\_index | Ingres type index. | `number` | `0` | no |
 | gcf\_log\_level | Set logging level for cloud functions. | `string` | `""` | no |
@@ -34,7 +35,7 @@ Sample infrastructure detailed description.
 | labels | A map of key/value label pairs to assign to the resources. | `map(string)` | <pre>{<br>  "app": "terraform-ml-image-annotation-gcf"<br>}</pre> | no |
 | project\_id | GCP project ID. | `string` | n/a | yes |
 | region | GCF deployment location/region. | `string` | `"us-west4"` | no |
-| time\_to\_enable\_apis | Time to enable APIs, approximate estimate is 5 minutes, can be more. | `string` | `"420s"` | no |
+| time\_to\_enable\_apis | Time to enable APIs, approximate estimate is 5 minutes, can be more. | `string` | `"30s"` | no |
 
 ## Outputs
 

@@ -23,10 +23,16 @@ variable "project_id" {
   }
 }
 
+variable "enable_apis" {
+  type        = string
+  description = "Whether or not to enable underlying apis in this solution."
+  default     = true
+}
+
 variable "time_to_enable_apis" {
   description = "Time to enable APIs, approximate estimate is 5 minutes, can be more."
   type        = string
-  default     = "420s"
+  default     = "30s"
 }
 
 variable "region" {
