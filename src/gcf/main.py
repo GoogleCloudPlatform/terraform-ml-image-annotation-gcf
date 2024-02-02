@@ -110,7 +110,7 @@ def get_feature_by_name(feature_name: str) -> Optional[vision.Feature.Type]:
     return None
 
 
-def build_features_list(feature_names: str | list) -> Optional[list]:
+def build_features_list(feature_names: str) -> Optional[list]:
     """Gets a list of Vision features for given list of names.
 
     Args:
@@ -121,11 +121,7 @@ def build_features_list(feature_names: str | list) -> Optional[list]:
     """
 
     features_list = []
-
-    features_items = feature_names
-    if isinstance(feature_names, str):
-        features_items = feature_names.split(",")
-
+    features_items = feature_names.split(",")
     for feature_name in features_items:
         feature = get_feature_by_name(feature_name.upper().strip('"').strip())
         if feature:
@@ -535,7 +531,9 @@ def handle_annotation(request):
         logging.info("Env. features: %s", features_env)
         features_list = build_features_list(features_env)
     # override annotation features with the ones from the request if provided
-    if features_http and isinstance(features_http, str | list):
+    if features_http and isinstance(features_http, list):
+        features_http = ','.join(features_http)
+    if features_http and isinstance(features_http, str):
         logging.info("Request features: %s", features_http)
         features_list = build_features_list(features_http)
     logging.info("Annotating for features: %s", features_list)
