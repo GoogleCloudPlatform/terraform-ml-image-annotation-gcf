@@ -532,6 +532,8 @@ def handle_annotation(request):
         features_list = build_features_list(features_env)
     # override annotation features with the ones from the request if provided
     if features_http:
+        if isinstance(features_http, list):
+            features_http = ','.join(features_http)
         logging.info("Request features: %s", features_http)
         features_list = build_features_list(features_http)
     logging.info("Annotating for features: %s", features_list)
