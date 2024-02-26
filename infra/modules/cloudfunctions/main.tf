@@ -74,7 +74,7 @@ resource "google_project_iam_member" "gcf_sa_roles" {
 
 resource "time_sleep" "some_time_after_gcf_sa_roles" {
   depends_on = [
-    module.google_project_iam_member.gcf_sa_roles
+    google_project_iam_member.gcf_sa_roles
   ]
   create_duration = "30s" # This might not be enough.
 }
