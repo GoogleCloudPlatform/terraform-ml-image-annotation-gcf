@@ -18,7 +18,7 @@ Sample infrastructure detailed description.
 
 ## Documentation
 
-- [Architecture Diagram](todo)
+- [Architecture Diagram](https://cloud.google.com/architecture/ai-ml/image-processing-cloud-functions)
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
