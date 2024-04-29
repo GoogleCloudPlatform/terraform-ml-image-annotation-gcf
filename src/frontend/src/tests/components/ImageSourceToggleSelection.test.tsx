@@ -15,7 +15,7 @@
  */
 
 import { render, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom/vitest";
 import { ImageSource } from "components/selection/UnifiedImageSelector";
 import { vi } from "vitest";
 import ImageSourceToggleSelection from "components/selection/ImageSourceToggleSelection";
