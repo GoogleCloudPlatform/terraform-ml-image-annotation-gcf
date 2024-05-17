@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.3.0](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/compare/v0.2.0...v0.3.0) (2024-04-29)
+
+
+### Features
+
+* add architecture diagram link ([#140](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/140)) ([3e96c59](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/3e96c5993d9eae6d65188ded7fedfb09a8d2662d))
+* allow list in features parameter ([#128](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/128)) ([63ef69e](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/63ef69e3e37b5c22864966d93d1e70f6d07d2617))
+* move api to project services and reduce wait ([#112](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/112)) ([56aac98](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/56aac98ebc9e2958683c0e59de707e1eecc1febe))
+
+
+### Bug Fixes
+
+* **deps:** update dependency daisyui to v4 ([#162](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/162)) ([c27c2ec](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/c27c2eca78befa0e71c7f9c8cce25995a0847a49))
+* **deps:** update dependency eslint-config-prettier to v9 ([#61](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/61)) ([30ac5f2](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/30ac5f22a07b608b89a171a9f4833b3407b2fdbd))
+* **deps:** Update Terraform time to ~&gt; 0.10.0 ([#126](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/126)) ([42fb307](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/42fb3079821943aa8c9c6406e3f03cbb4aea193a))
+* disabling module swapper as a quick fix ([#113](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/113)) ([dbefe4d](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/dbefe4d67eec435737f38ef682fe62a4e6e79fe0))
+
 ## [0.2.0](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/compare/v0.1.2...v0.2.0) (2023-12-19)
 
 
