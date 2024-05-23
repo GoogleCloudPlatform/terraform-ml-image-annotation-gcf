@@ -72,6 +72,13 @@ resource "google_project_iam_member" "gcf_sa_roles" {
   project = data.google_project.project.id
 }
 
+resource "time_sleep" "some_time_after_gcf_sa_roles" {
+  depends_on = [
+    google_project_iam_member.gcf_sa_roles
+  ]
+  create_duration = "30s" # This might not be enough.
+}
+
 # -------- Vision annotation GCF accessible from the internet or internally only --------------
 
 
@@ -82,7 +89,7 @@ resource "google_cloudfunctions2_function" "annotate_http" {
   description = "Vision API Image Annotate via HTTP, external"
   depends_on = [
     google_storage_bucket_object.gcf_code,
-    google_project_iam_member.gcf_sa_roles,
+    time_sleep.some_time_after_gcf_sa_roles,
   ]
   build_config {
     runtime     = "python311"
@@ -145,7 +152,7 @@ resource "google_project_iam_member" "gcs_pubsub_publishing" {
 resource "google_cloudfunctions2_function" "annotate_gcs" {
   depends_on = [
     google_storage_bucket_object.gcf_code,
-    google_project_iam_member.gcf_sa_roles,
+    time_sleep.some_time_after_gcf_sa_roles,
     data.google_storage_project_service_account.gcs_account
   ]
   name        = "annotate_gcs"
