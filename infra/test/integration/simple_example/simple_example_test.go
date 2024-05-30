@@ -26,7 +26,7 @@ import (
 	"encoding/json"
 	"os"
 	"io/ioutil"
-	
+
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
@@ -81,7 +81,7 @@ func TestSimpleExample(t *testing.T) {
 
 func testBucketExists(testParams TestParams) (string, string) {
 	gcloudArgs := gcloud.WithCommonArgs([]string{"--project", testParams.projectId})
-	Check if the vision annotations bucket exists
+	// Check if the vision annotations bucket exists
 	outputBucketName := testParams.example.GetStringOutput("vision_annotations_gcs")
 	storage := gcloud.Run(testParams.t, fmt.Sprintf("storage buckets describe %s --format=json", outputBucketName), gcloudArgs)
 	testParams.assert.NotEmpty(storage)
