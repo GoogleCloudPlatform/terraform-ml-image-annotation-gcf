@@ -72,7 +72,7 @@ if log_level:
 # Storage
 
 def gcs_write(
-        bucket_name: str, 
+        bucket_name: str,
         file_name: str,
         content: str):
     """Write and read a blob from GCS using file-like IO.
@@ -90,6 +90,7 @@ def gcs_write(
     with blob.open("w") as fp:
         fp.write(content)
 
+
 def read_file_from_gcs(
         bucket: str,
         file_path: str
@@ -100,17 +101,20 @@ def read_file_from_gcs(
     # Return the object as bytes
     return blob.download_as_bytes()
 
+
 def pretty_print_file(
     bucket: str,
     file_path: str
 ) -> str:
-    return "gs://{}/{}".format(bucket,file_path)
+    return "gs://{}/{}".format(bucket, file_path)
+
 
 def get_file_name(
     file_path: str
 ) -> str:
     filename = file_path.split("/")[-1]
     return (filename.split(".")[0])
+
 
 def list_bucket_object_names(
     bucket_name: str,
@@ -128,7 +132,9 @@ def list_bucket_object_names(
         pass
     return None
 
+
 # Helper functions
+
 
 def parse_request_json(
     request_json: str
@@ -154,10 +160,10 @@ def read_and_infer(
         image_bytes = read_file_from_gcs(image_bucket, image_file_name)
         vqa_results = vqa(image_bytes, vqa_question, vqa_num_results)
         contents = {
-            "File URI" : pretty_print_file(image_bucket,image_file_name),
-            "Prompt" : vqa_question,
-            "Number of requested results": vqa_num_results,
-            "Responses" : ",".join(vqa_results)
+            "File URI": pretty_print_file(image_bucket,image_file_name), 
+            "Prompt": vqa_question, 
+            "Number of requested results": vqa_num_results, 
+            "Responses": ",".join(vqa_results)
         }
         gcs_write(output_bucket, image_file_name, json.dumps(contents))
 
