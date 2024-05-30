@@ -23,15 +23,15 @@ import (
 	"time"
 	"strings"
 	"regexp"
-	"encoding/json"
-	"os"
-	"io/ioutil"
+	// "encoding/json"
+	// "os"
+	// "io/ioutil"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
-	"github.com/parnurzeal/gorequest"
+	// "github.com/parnurzeal/gorequest"
 )
 
 type TestParams struct {
