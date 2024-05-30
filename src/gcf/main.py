@@ -160,9 +160,9 @@ def read_and_infer(
         image_bytes = read_file_from_gcs(image_bucket, image_file_name)
         vqa_results = vqa(image_bytes, vqa_question, vqa_num_results)
         contents = {
-            "File URI": pretty_print_file(image_bucket,image_file_name), 
-            "Prompt": vqa_question, 
-            "Number of requested results": vqa_num_results, 
+            "File URI": pretty_print_file(image_bucket, image_file_name),
+            "Prompt": vqa_question,
+            "Number of requested results": vqa_num_results,
             "Responses": ",".join(vqa_results)
         }
         gcs_write(output_bucket, image_file_name, json.dumps(contents))
