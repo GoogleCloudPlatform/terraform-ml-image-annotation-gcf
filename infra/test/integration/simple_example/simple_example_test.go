@@ -56,9 +56,9 @@ func TestSimpleExample(t *testing.T) {
 
 		// Use publicly available image url
 		visionApiMethod:= "vqa"
-		vqaQuestion:= "What is this?" 
-		vqaNumResults:= 1
-		imageBucket:= "cloud-samples-data"  
+		vqaQuestion:= "What is this?"
+		vqaNumResults:= "1"
+		imageBucket:= "cloud-samples-data"
 		imageFile:= "vision/eiffel_tower.jpg"
 		visionEntrypointUrlArr := strings.Fields(example.GetStringOutput("vision_prediction_url"))
 		annotateUrl := strings.Trim(visionEntrypointUrlArr[0], "[]") + "/annotate"
@@ -159,7 +159,7 @@ func testNormalAnnotateApi(testParams TestParams, annotateUrl string, visionApiM
 	utils.Poll(testParams.t, isServing, 20, time.Second * 3)
 }
 
-func CreateVisionAPIRequest(annotateUrl string, visionApiMethod string, vqaQuestion string, vqaNumResults int, imageBucket string, imageFile string) (*http.Request, error) {
+func CreateVisionAPIRequest(annotateUrl string, visionApiMethod string, vqaQuestion string, vqaNumResults string, imageBucket string, imageFile string) (*http.Request, error) {
 	// Create a multipart request body
 	body := new(bytes.Buffer)
 	writer := multipart.NewWriter(body)
@@ -171,22 +171,22 @@ func CreateVisionAPIRequest(annotateUrl string, visionApiMethod string, vqaQuest
 	}
 
 	// Add the vqa_question field
-	err := writer.WriteField("vqa_question", vqaQuestion)
+	err = writer.WriteField("vqa_question", vqaQuestion)
 	if err != nil {
 		return nil, err
 	}
 	// Add the vqa_num_results field
-	err := writer.WriteField("vqa_num_results", vqaNumResults)
+	err = writer.WriteField("vqa_num_results", vqaNumResults)
 	if err != nil {
 		return nil, err
 	}
 	// Add the image_bucket field
-	err := writer.WriteField("image_bucket", imageBucket)
+	err = writer.WriteField("image_bucket", imageBucket)
 	if err != nil {
 		return nil, err
 	}
 	// Add the image_file field
-	err := writer.WriteField("image_file", imageFile)
+	err = writer.WriteField("image_file", imageFile)
 	if err != nil {
 		return nil, err
 	}
