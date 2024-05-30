@@ -23,8 +23,6 @@ import (
 	"time"
 	"strings"
 	"regexp"
-	"encoding/json"
-	"os"
 	"io/ioutil"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
@@ -66,9 +64,11 @@ func TestSimpleExample(t *testing.T) {
 		testParams := TestParams{t, assert, example, projectId}
 		// Check if the vision input and annotations buckets exists
 		outputBucketName, inputBucketName := testBucketExists(testParams)
+		UNUSED(outputBucketName, inputBucketName)
 
 		// Check Cloud Function status and trigger region
 		annotateGcsFunctionName, annotateGcsFunctionRegion, annotateHttpFunctionName, annotateHttpFunctionRegion := testFunctionExists(testParams)
+		UNUSED(annotateGcsFunctionName, annotateGcsFunctionRegion, annotateHttpFunctionName, annotateHttpFunctionRegion)
 
 		// Check the RESTful API annotation
 		testNormalAnnotateApi(testParams, annotateUrl, visionApiMethod, vqaQuestion, vqaNumResults, imageBucket, imageFile)
@@ -80,16 +80,19 @@ func TestSimpleExample(t *testing.T) {
 func testBucketExists(testParams TestParams) (string, string) {
 	gcloudArgs := gcloud.WithCommonArgs([]string{"--project", testParams.projectId})
 	// Check if the vision annotations bucket exists
-	outputBucketName := testParams.example.GetStringOutput("vision_annotations_gcs")
+	// outputBucketName := testParams.example.GetStringOutput("vision_annotations_gcs")
 	storage := gcloud.Run(testParams.t, fmt.Sprintf("storage buckets describe %s --format=json", outputBucketName), gcloudArgs)
 	testParams.assert.NotEmpty(storage)
 
 	// Check if the vision input bucket exists
-	inputBucketName := testParams.example.GetStringOutput("vision_input_gcs")
+	// inputBucketName := testParams.example.GetStringOutput("vision_input_gcs")
 	storage = gcloud.Run(testParams.t, fmt.Sprintf("storage buckets describe %s --format=json", inputBucketName), gcloudArgs)
 	testParams.assert.NotEmpty(storage)
 	return outputBucketName, inputBucketName
 }
+
+// UNUSED allows unused variables to be included in Go programs
+func UNUSED(x ...interface{}) {}
 
 func testFunctionExists(testParams TestParams) (string, string, string, string) {
 	gcloudArgs := gcloud.WithCommonArgs([]string{"--project", testParams.projectId})
@@ -144,7 +147,7 @@ func testFunctionExists(testParams TestParams) (string, string, string, string) 
 	return annotateGcsFunctionName, annotateGcsFunctionRegion, annotateHttpFunctionName, annotateHttpFunctionRegion
 }
 
-func testNormalAnnotateApi(testParams TestParams, annotateUrl string, visionApiMethod string, vqaQuestion string, vqaNumResults int, imageBucket string, imageFile string) {
+func testNormalAnnotateApi(testParams TestParams, annotateUrl string, visionApiMethod string, vqaQuestion string, vqaNumResults string, imageBucket string, imageFile string) {
 	// Call the annotate API
 	isServing := func() (bool, error) {
 		req, err := CreateVisionAPIRequest(annotateUrl, visionApiMethod, vqaQuestion, vqaNumResults, imageBucket, imageFile)
