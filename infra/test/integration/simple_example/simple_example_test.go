@@ -17,13 +17,13 @@ package simple_example
 import (
 	"fmt"
 	"net/http"
-	"mime/multipart"
+	//"mime/multipart"
 	"testing"
 	"bytes"
 	"time"
 	"strings"
 	"regexp"
-	// "encoding/json"
+	"encoding/json"
 	// "os"
 	// "io/ioutil"
 
@@ -152,7 +152,6 @@ func testFunctionExists(testParams TestParams) (string, string, string, string) 
 func testNormalAnnotateApi(testParams TestParams, annotateUrl string, visionApiMethod string, vqaQuestion string, vqaNumResults string, imageBucket string, imageFile string) {
 	// Call the annotate API
 	isServing := func() (bool, error) {
-		request := gorequest.New()
 		postBody, _ := json.Marshal(map[string]string{
 			"vision_api_method":  visionApiMethod,
 			"vqa_question": vqaQuestion,
@@ -160,7 +159,7 @@ func testNormalAnnotateApi(testParams TestParams, annotateUrl string, visionApiM
 			"image_bucket": imageBucket,
 			"image_file": imageFile,
 		})
-		resp, err := http.Post(authAuthenticatorUrl, "application/json", bytes.NewBuffer(postBody))
+		resp, err := http.Post(annotateUrl, "application/json", bytes.NewBuffer(postBody))
 		if err != nil || resp.StatusCode != 200 {
 			// retry if err or status not 200
 			return true, nil
