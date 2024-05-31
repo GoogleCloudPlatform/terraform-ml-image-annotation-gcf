@@ -105,7 +105,7 @@ resource "google_cloudfunctions2_function" "annotate_http" {
   service_config {
     max_instance_count = var.gcf_max_instance_count
     timeout_seconds    = var.gcf_timeout_seconds
-    available_memory   = "256M"
+    available_memory   = "1G"
     environment_variables = {
       INPUT_BUCKET       = var.input-bucket
       ANNOTATIONS_BUCKET = var.annotations-bucket
@@ -177,7 +177,7 @@ resource "google_cloudfunctions2_function" "annotate_gcs" {
   service_config {
     max_instance_count = var.gcf_max_instance_count
     timeout_seconds    = var.gcf_timeout_seconds
-    available_memory   = "256M"
+    available_memory   = "1G"
     environment_variables = {
       INPUT_BUCKET       = var.input-bucket
       ANNOTATIONS_BUCKET = var.annotations-bucket
