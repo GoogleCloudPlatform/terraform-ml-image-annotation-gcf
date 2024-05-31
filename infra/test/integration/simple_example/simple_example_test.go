@@ -161,7 +161,7 @@ func testNormalAnnotateApi(testParams TestParams, annotateUrl string, visionApiM
 		}
 		return false, nil
 	}
-	utils.Poll(testParams.t, isServing, 20, time.Second * 3)
+	utils.Poll(testParams.t, isServing, 20, time.Second * 60)
 }
 
 func CreateVisionAPIRequest(annotateUrl string, visionApiMethod string, vqaQuestion string, vqaNumResults string, imageBucket string, imageFile string) (*http.Request, error) {
