@@ -35,6 +35,8 @@ module "project-services" {
     "pubsub.googleapis.com",
     "cloudbuild.googleapis.com",
     "run.googleapis.com",
+    # Gemini API
+    "aiplatform.googleapis.com",
     # Vision API
     "vision.googleapis.com",
     "appengine.googleapis.com",
