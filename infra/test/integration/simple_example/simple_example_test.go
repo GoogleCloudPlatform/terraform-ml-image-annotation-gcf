@@ -166,5 +166,5 @@ func testNormalAnnotateApi(testParams TestParams, annotateUrl string, visionApiM
 		}
 		return false, nil
 	}
-	utils.Poll(testParams.t, isServing, 20, time.Second * 10)
+	utils.Poll(testParams.t, isServing, 20, time.Second * 5)
 }
