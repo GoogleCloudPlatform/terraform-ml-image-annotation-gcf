@@ -153,8 +153,6 @@ func testNormalAnnotateApi(testParams TestParams, annotateUrl string, visionApiM
 	// Call the annotate API
 	isServing := func() (bool, error) {
 		request := gorequest.New()
-
-		"vision_api_method": "vqa",  "vqa_question": "What is this?",  "vqa_num_results": 1,  "image_bucket": "cloud-samples-data" ,  "image_file": "vision/eiffel_tower.jpg"
 		postBody, _ := json.Marshal(map[string]string{
 			"vision_api_method":  visionApiMethod,
 			"vqa_question": vqaQuestion,
