@@ -152,63 +152,22 @@ func testFunctionExists(testParams TestParams) (string, string, string, string) 
 func testNormalAnnotateApi(testParams TestParams, annotateUrl string, visionApiMethod string, vqaQuestion string, vqaNumResults string, imageBucket string, imageFile string) {
 	// Call the annotate API
 	isServing := func() (bool, error) {
-		req, err := CreateVisionAPIRequest(annotateUrl, visionApiMethod, vqaQuestion, vqaNumResults, imageBucket, imageFile)
-		client := http.Client{}
-		resp, err := client.Do(req)
+		request := gorequest.New()
+
+		"vision_api_method": "vqa",  "vqa_question": "What is this?",  "vqa_num_results": 1,  "image_bucket": "cloud-samples-data" ,  "image_file": "vision/eiffel_tower.jpg"
+		postBody, _ := json.Marshal(map[string]string{
+			"vision_api_method":  visionApiMethod,
+			"vqa_question": vqaQuestion,
+			"vqa_num_results": vqaNumResults,
+			"image_bucket": imageBucket,
+			"image_file": imageFile,
+		})
+		resp, err := http.Post(authAuthenticatorUrl, "application/json", bytes.NewBuffer(postBody))
 		if err != nil || resp.StatusCode != 200 {
 			// retry if err or status not 200
 			return true, nil
 		}
 		return false, nil
 	}
-	utils.Poll(testParams.t, isServing, 20, time.Second * 60)
-}
-
-func CreateVisionAPIRequest(annotateUrl string, visionApiMethod string, vqaQuestion string, vqaNumResults string, imageBucket string, imageFile string) (*http.Request, error) {
-	// Create a multipart request body
-	body := new(bytes.Buffer)
-	writer := multipart.NewWriter(body)
-
-	// Add the vision_api_method field
-	err := writer.WriteField("vision_api_method", visionApiMethod)
-	if err != nil {
-		return nil, err
-	}
-
-	// Add the vqa_question field
-	err = writer.WriteField("vqa_question", vqaQuestion)
-	if err != nil {
-		return nil, err
-	}
-	// Add the vqa_num_results field
-	err = writer.WriteField("vqa_num_results", vqaNumResults)
-	if err != nil {
-		return nil, err
-	}
-	// Add the image_bucket field
-	err = writer.WriteField("image_bucket", imageBucket)
-	if err != nil {
-		return nil, err
-	}
-	// Add the image_file field
-	err = writer.WriteField("image_file", imageFile)
-	if err != nil {
-		return nil, err
-	}
-
-	// Close the multipart writer
-	err = writer.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	// Create a new HTTP POST request with the multipart request body
-	req, err := http.NewRequest("POST", annotateUrl, body)
-	if err != nil {
-		return nil, err
-	}
-
-	// Set the Content-Type header to multipart/form-data with a boundary
-	req.Header.Set("Content-Type", writer.FormDataContentType())
-	return req, nil
+	utils.Poll(testParams.t, isServing, 20, time.Second * 10)
 }

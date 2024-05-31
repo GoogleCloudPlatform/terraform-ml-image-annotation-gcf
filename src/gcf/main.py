@@ -146,7 +146,7 @@ def parse_request_json(
     vqa_num_results = DEFAULT_NUMBER_OF_RESULTS
     if method == "vqa":
         vqa_question = request_json["vqa_question"]
-        vqa_num_results = request_json["vqa_num_results"]
+        vqa_num_results = int(request_json["vqa_num_results"])
     return method, image_bucket, image_file, vqa_question, vqa_num_results
 
 
