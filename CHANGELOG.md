@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/compare/v0.3.0...v0.3.1) (2024-06-02)
+
+
+### Bug Fixes
+
+* Wait 30s between CFs and CF SA roles ([#138](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/138)) ([07040b2](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/07040b2fcd0843d3d2e77ec3cf570772b8c6033b))
+
 ## [0.3.0](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/compare/v0.2.0...v0.3.0) (2024-04-29)
 
 
