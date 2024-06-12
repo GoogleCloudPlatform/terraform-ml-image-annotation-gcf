@@ -65,6 +65,7 @@ resource "google_project_iam_member" "gcf_sa_roles" {
     "roles/storage.objectAdmin",     # R/W objects into GCS
     "roles/logging.logWriter",       # logging
     "roles/artifactregistry.reader", # function deployment
+    "roles/aiplatform.user",         # vertex ai user
   ])
   role   = each.key
   member = "serviceAccount:${google_service_account.gcf_sa.email}"
