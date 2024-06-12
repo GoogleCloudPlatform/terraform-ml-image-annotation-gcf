@@ -16,8 +16,8 @@
 
 locals {
   code_bucket_prefix    = "vision-code"
-  functions_src_folder  = "${path.module}/../../src/gcf/" # local folder where function code resides
-  functions_temp_folder = "${path.module}/../../temp"     # local folder where function code resides
+  functions_src_folder  = "${path.module}/../../../src/gcf/" # local folder where function code resides
+  functions_temp_folder = "${path.module}/../../../temp"     # local folder where function code resides
   functions_file_prefix = "gcf_code"
   zip_ext               = ".zip"
 }
