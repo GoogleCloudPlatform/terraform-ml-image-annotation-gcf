@@ -17,21 +17,21 @@ package simple_example
 import (
 	"fmt"
 	"net/http"
-	"mime/multipart"
+	//"mime/multipart"
 	"testing"
 	"bytes"
 	"time"
 	"strings"
 	"regexp"
 	"encoding/json"
-	"os"
-	"io/ioutil"
+	// "os"
+	// "io/ioutil"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
-	"github.com/parnurzeal/gorequest"
+	// "github.com/parnurzeal/gorequest"
 )
 
 type TestParams struct {
@@ -55,24 +55,26 @@ func TestSimpleExample(t *testing.T) {
 		projectId := example.GetTFSetupStringOutput("project_id")
 
 		// Use publicly available image url
-		imageUri := "https://storage.googleapis.com/cft_test_data/annotate_images/ML20682781.jpg"
-		features := []string{"FACE_DETECTION", "OBJECT_LOCALIZATION", "IMAGE_PROPERTIES", "LABEL_DETECTION", "SAFE_SEARCH_DETECTION"}
+		visionApiMethod:= "vqa"
+		vqaQuestion:= "What is this?"
+		vqaNumResults:= "1"
+		imageBucket:= "cloud-samples-data"
+		imageFile:= "vision/eiffel_tower.jpg"
 		visionEntrypointUrlArr := strings.Fields(example.GetStringOutput("vision_prediction_url"))
 		annotateUrl := strings.Trim(visionEntrypointUrlArr[0], "[]") + "/annotate"
 
 		testParams := TestParams{t, assert, example, projectId}
 		// Check if the vision input and annotations buckets exists
 		outputBucketName, inputBucketName := testBucketExists(testParams)
+		UNUSED(outputBucketName, inputBucketName)
 
 		// Check Cloud Function status and trigger region
 		annotateGcsFunctionName, annotateGcsFunctionRegion, annotateHttpFunctionName, annotateHttpFunctionRegion := testFunctionExists(testParams)
+		UNUSED(annotateGcsFunctionName, annotateGcsFunctionRegion, annotateHttpFunctionName, annotateHttpFunctionRegion)
 
 		// Check the RESTful API annotation
-		testNormalAnnotateApi(testParams, annotateUrl, imageUri, features)
+		testNormalAnnotateApi(testParams, annotateUrl, visionApiMethod, vqaQuestion, vqaNumResults, imageBucket, imageFile)
 
-		// Update the environment variables of the Cloud Function and verify the annotation feature
-		testUpdateFunctionEnv(testParams, annotateGcsFunctionName, annotateGcsFunctionRegion, annotateHttpFunctionName, annotateHttpFunctionRegion, inputBucketName, outputBucketName,
-			annotateUrl, imageUri, features)
 	})
 	example.Test()
 }
@@ -90,6 +92,9 @@ func testBucketExists(testParams TestParams) (string, string) {
 	testParams.assert.NotEmpty(storage)
 	return outputBucketName, inputBucketName
 }
+
+// UNUSED allows unused variables to be included in Go programs
+func UNUSED(x ...interface{}) {}
 
 func testFunctionExists(testParams TestParams) (string, string, string, string) {
 	gcloudArgs := gcloud.WithCommonArgs([]string{"--project", testParams.projectId})
@@ -144,123 +149,22 @@ func testFunctionExists(testParams TestParams) (string, string, string, string) 
 	return annotateGcsFunctionName, annotateGcsFunctionRegion, annotateHttpFunctionName, annotateHttpFunctionRegion
 }
 
-func testNormalAnnotateApi(testParams TestParams, annotateUrl string, imageUri string, features []string) {
+func testNormalAnnotateApi(testParams TestParams, annotateUrl string, visionApiMethod string, vqaQuestion string, vqaNumResults string, imageBucket string, imageFile string) {
 	// Call the annotate API
 	isServing := func() (bool, error) {
-		req, err := CreateVisionAPIRequest(annotateUrl, imageUri, features)
-		client := http.Client{}
-		resp, err := client.Do(req)
+		postBody, _ := json.Marshal(map[string]string{
+			"vision_api_method":  visionApiMethod,
+			"vqa_question": vqaQuestion,
+			"vqa_num_results": vqaNumResults,
+			"image_bucket": imageBucket,
+			"image_file": imageFile,
+		})
+		resp, err := http.Post(annotateUrl, "application/json", bytes.NewBuffer(postBody))
 		if err != nil || resp.StatusCode != 200 {
 			// retry if err or status not 200
 			return true, nil
 		}
 		return false, nil
 	}
-	utils.Poll(testParams.t, isServing, 20, time.Second * 3)
-}
-
-func testUpdateFunctionEnv(testParams TestParams, annotateGcsFunctionName string, annotateGcsFunctionRegion string, annotateHttpFunctionName string, annotateHttpFunctionRegion string,
-		inputBucketName string, outputBucketName string, annotateUrl string, imageUri string, features []string) {
-	gcloudArgs := gcloud.WithCommonArgs([]string{"--project", testParams.projectId})
-	// Update annotate_gcs env vars
-	sourceCodeUrl := testParams.example.GetStringOutput("source_code_url")
-	gcloud.Run(testParams.t, fmt.Sprintf("functions deploy %s --region=%s --trigger-bucket=%s --source=%s --gen2 --update-env-vars=FEATURES=TEXT_DETECTION --format=json",
-		annotateGcsFunctionName, annotateGcsFunctionRegion, inputBucketName, sourceCodeUrl), gcloudArgs)
-
-	// Upload test image to input bucket
-	testFileName := "TestImage.jpg"
-	testFilePath := fmt.Sprintf("testfile/%s", testFileName)
-	gcloud.Run(testParams.t, fmt.Sprintf("storage cp %s %s --format=json", testFilePath, inputBucketName), gcloudArgs)
-
-	// Update annotate-http env vars
-	gcloud.Run(testParams.t, fmt.Sprintf("functions deploy %s --region=%s --trigger-http --source=%s --gen2 --update-env-vars=FEATURES=TEXT_DETECTION --format=json",
-		annotateHttpFunctionName, annotateHttpFunctionRegion, sourceCodeUrl), gcloudArgs)
-
-	// Check the RESTful API annotation
-	request := gorequest.New()
-	resp, body, errs := request.Post(annotateUrl).
-		Type("multipart").
-		Send(`{"image_uri": "` + imageUri + `"}`).
-		Retry(5, 5 * time.Second, http.StatusBadRequest, http.StatusInternalServerError).
-		End()
-	for _, err := range errs {
-		testParams.assert.NoError(err)
-	}
-	testParams.assert.Equal(http.StatusOK, resp.StatusCode)
-
-	// Check the RESTful API annotation response
-	var annotateResult map[string]any
-	err := json.Unmarshal([]byte(body), &annotateResult)
-	testParams.assert.NoError(err)
-	textAnnotations := annotateResult["textAnnotations"].([]interface{})
-	testParams.assert.NotEmpty(textAnnotations)
-
-	// Check the annotation result file
-	testResultJsonFileName := testFileName + ".json"
-	gcloud.Run(testParams.t, fmt.Sprintf("storage cp %s/%s testfile/ --format=json", outputBucketName, testResultJsonFileName), gcloudArgs)
-	jsonFile, err := os.Open(fmt.Sprintf("testfile/%s", testResultJsonFileName))
-	testParams.assert.NoError(err)
-	defer jsonFile.Close()
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-	err = json.Unmarshal(byteValue, &annotateResult)
-	testParams.assert.NoError(err)
-	textAnnotations = annotateResult["textAnnotations"].([]interface{})
-	testParams.assert.NotEmpty(textAnnotations)
-
-	// Check the RESTful API error code
-	resp, _, errs = request.Post(annotateUrl).
-		Type("multipart").
-		Send(`{"features": ["FACE_DETECTION"]}`).
-		Retry(5, 5 * time.Second, http.StatusBadRequest, http.StatusInternalServerError).
-		End()
-	for _, err := range errs {
-		testParams.assert.NoError(err)
-	}
-	testParams.assert.Equal(http.StatusPreconditionFailed, resp.StatusCode)
-
-	resp, _, errs = request.Put(annotateUrl).
-		Type("multipart").
-		Send(`{"image_uri": "` + imageUri + `"}`).
-		Send(`{"features": ["FACE_DETECTION"]}`).
-		Retry(5, 5 * time.Second, http.StatusBadRequest, http.StatusInternalServerError).
-		End()
-	for _, err := range errs {
-		testParams.assert.NoError(err)
-	}
-	testParams.assert.Equal(http.StatusNotImplemented, resp.StatusCode)
-}
-
-func CreateVisionAPIRequest(annotateUrl string, imageUri string, features []string) (*http.Request, error) {
-	// Create a multipart request body
-	body := new(bytes.Buffer)
-	writer := multipart.NewWriter(body)
-
-	// Add the image_uri field
-	err := writer.WriteField("image_uri", imageUri)
-	if err != nil {
-		return nil, err
-	}
-	// Add the features field
-	for _, feature := range features {
-		err = writer.WriteField("features", feature)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	// Close the multipart writer
-	err = writer.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	// Create a new HTTP POST request with the multipart request body
-	req, err := http.NewRequest("POST", annotateUrl, body)
-	if err != nil {
-		return nil, err
-	}
-
-	// Set the Content-Type header to multipart/form-data with a boundary
-	req.Header.Set("Content-Type", writer.FormDataContentType())
-	return req, nil
+	utils.Poll(testParams.t, isServing, 20, time.Second * 4)
 }

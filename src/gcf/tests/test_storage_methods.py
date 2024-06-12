@@ -16,26 +16,15 @@ from unittest.mock import patch
 
 with patch("google.cloud.logging.Client"):
     with patch("opentelemetry.exporter.cloud_trace.CloudTraceSpanExporter"):
-        from main import image_filename_for_json, json_filename_for_image
+        from main import get_file_name
 
 
-def test_json_filename_for_image():
+def test_get_file_name():
     # Given
-    file_name = "image.png"
+    file_name = "test/image.png"
 
     # When
-    result = json_filename_for_image(file_name)
+    result = get_file_name(file_name)
 
     # Then
-    assert result == "image.png.json"
-
-
-def test_image_filename_for_json():
-    # Given
-    file_name = "annotation.json"
-
-    # When
-    result = image_filename_for_json(file_name)
-
-    # Then
-    assert result == "annotation"
+    assert result == "image"

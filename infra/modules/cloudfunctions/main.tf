@@ -65,6 +65,7 @@ resource "google_project_iam_member" "gcf_sa_roles" {
     "roles/storage.objectAdmin",     # R/W objects into GCS
     "roles/logging.logWriter",       # logging
     "roles/artifactregistry.reader", # function deployment
+    "roles/aiplatform.user",         # vertex ai user
   ])
   role   = each.key
   member = "serviceAccount:${google_service_account.gcf_sa.email}"
@@ -105,7 +106,7 @@ resource "google_cloudfunctions2_function" "annotate_http" {
   service_config {
     max_instance_count = var.gcf_max_instance_count
     timeout_seconds    = var.gcf_timeout_seconds
-    available_memory   = "256M"
+    available_memory   = "1G"
     environment_variables = {
       INPUT_BUCKET       = var.input-bucket
       ANNOTATIONS_BUCKET = var.annotations-bucket
@@ -177,7 +178,7 @@ resource "google_cloudfunctions2_function" "annotate_gcs" {
   service_config {
     max_instance_count = var.gcf_max_instance_count
     timeout_seconds    = var.gcf_timeout_seconds
-    available_memory   = "256M"
+    available_memory   = "1G"
     environment_variables = {
       INPUT_BUCKET       = var.input-bucket
       ANNOTATIONS_BUCKET = var.annotations-bucket
