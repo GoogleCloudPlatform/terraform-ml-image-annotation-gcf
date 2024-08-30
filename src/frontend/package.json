@@ -48,7 +48,7 @@
     "eslint-plugin-react": "^7.34.1",
     "jsdom": "^24.0.0",
     "postcss": "^8.4.38",
-    "prettier": "3.2.5",
+    "prettier": "3.3.3",
     "tailwindcss": "^3.4.3",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^5.4.5",
