@@ -26,29 +26,15 @@ In the project directory, you can run:
 VITE_API_SERVER=<BACKEND_URI>
 ```
 
-#### Option 1. Build and deploy to Google Cloud Run in one step
+#### Build and deploy to Google Cloud Run in one step
 
 ```
 gcloud run deploy image-processing-frontend --source . --region=us-central1 --cpu=2 --memory=8G --timeout=3600 --allow-unauthenticated
 ```
 
-This packages the frontend into an image using the Dockerfile and saves it in the Google Container Registry. It then deploys the image right away.
+This packages the frontend into an image using the Dockerfile and saves it in the Artifact Registry. It then deploys the image right away.
 
-#### Option 2. Build a container using Google Cloud Build
-
-```
-gcloud builds submit --tag gcr.io/your-project-name/image-processing-frontend
-```
-
-This uses the Dockerfile to build the frontend container and save it in the Google Container Registry.
-
-This can then be deployed to Cloud Run using the following command:
-
-```
-gcloud run deploy image-processing-frontend --image gcr.io/your-project-name/image-processing-frontend --region=us-central1 --platform=managed --cpu=2 --memory=8G --timeout=3600 --allow-unauthenticated --min-instances=0
-```
-
-See [Deploy a Python service to Cloud Run](https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-python-service) for more information.
+See [Deploy from source code](https://cloud.google.com/run/docs/deploying-source-code) and [Deploy a Python service to Cloud Run](https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-python-service) for more information.
 
 ### Development
 
