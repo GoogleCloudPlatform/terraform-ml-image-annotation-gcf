@@ -2,7 +2,7 @@ module github.com/HSA-Integration/Annotate-images-with-ML-GCF/infra/test/integra
 
 go 1.22
 
-toolchain go1.22.3
+toolchain go1.24.13
 
 require (
 	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.15.1
