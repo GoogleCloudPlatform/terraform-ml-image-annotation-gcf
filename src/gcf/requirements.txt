@@ -1,6 +1,6 @@
 functions-framework==3.*
 google-cloud-vision==3.7.*
-google-cloud-storage==2.16.*
+google-cloud-storage==2.19.*
 google-cloud-logging
 opentelemetry-api
 opentelemetry-sdk
