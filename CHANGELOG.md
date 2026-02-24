@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/compare/v0.3.0...v0.4.0) (2026-02-24)
+
+
+### Features
+
+* Set Terraform required_version to &gt;= 1.5 ([e464402](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/e4644028fdd1c9276b9f083dfedcab6f06a34bdd))
+
+
+### Bug Fixes
+
+* **deps:** Update dependency prettier to v3.3.3 ([#190](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/190)) ([f8df8cb](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/f8df8cb9845ccfed161dc1f9dafc75981e4340bf))
+* Wait 30s between CFs and CF SA roles ([#138](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/issues/138)) ([07040b2](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/commit/07040b2fcd0843d3d2e77ec3cf570772b8c6033b))
+
 ## [0.3.0](https://github.com/GoogleCloudPlatform/terraform-ml-image-annotation-gcf/compare/v0.2.0...v0.3.0) (2024-04-29)
 
 
